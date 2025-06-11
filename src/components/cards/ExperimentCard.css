@@ -1,0 +1,228 @@
+.experiment-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.experiment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.experiment-card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.experiment-card-link:hover {
+  color: inherit;
+}
+
+.experiment-image-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.experiment-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.experiment-card:hover .experiment-image {
+  transform: scale(1.05);
+}
+
+/* 改进徽章布局容器，使用flex确保水平排列 */
+.experiment-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* 增加徽章之间的间距 */
+  max-width: calc(100% - 20px); /* 确保不超出容器 */
+}
+
+/* 调整所有徽章的基本样式 */
+.experiment-type-badge,
+.experiment-status-badge {
+  font-size: 0.7rem;
+  padding: 0.35em 0.65em;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  height: 24px; /* 固定徽章高度 */
+  min-height: 24px; /* 确保最小高度 */
+  white-space: nowrap; /* 防止文字换行 */
+  margin: 0 !important; /* 覆盖Bootstrap的margin */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 添加阴影区分徽章 */
+}
+
+/* 确保类型徽章始终在最左边显示 */
+.experiment-type-badge {
+  order: 1;
+}
+
+/* 确保新品标签在中间 */
+.badge.bg-danger.experiment-status-badge {
+  order: 2;
+}
+
+/* 确保热门标签在右边 */
+.badge.bg-warning.experiment-status-badge {
+  order: 3;
+}
+
+/* 全面优化图标的稳定渲染 */
+.experiment-type-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  width: 1.1em !important;
+  height: 1.1em !important;
+  min-width: 1.1em !important; /* 确保最小宽度 */
+  min-height: 1.1em !important; /* 确保最小高度 */
+  margin-right: 0.25rem !important;
+  will-change: transform;
+  transform: translateZ(0); /* 启用GPU加速 */
+  backface-visibility: hidden; /* 防止闪烁 */
+  -webkit-font-smoothing: subpixel-antialiased;
+  position: relative; /* 确保定位上下文 */
+  vertical-align: text-top; /* 确保与文本对齐 */
+}
+
+/* 确保图标在加载前保留空间 */
+.experiment-type-badge::before {
+  content: '';
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.25rem;
+  visibility: hidden;
+}
+
+.experiment-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.experiment-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.difficulty-badge {
+  font-size: 0.7rem;
+  padding: 0.35em 0.65em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.time-estimate {
+  display: flex;
+  align-items: center;
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.experiment-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.experiment-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.chip-badge {
+  font-size: 0.7rem;
+  padding: 0.25em 0.65em;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  color: #666;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Experiment type specific styling */
+.experiment-type-gpio {
+  border-top: 4px solid #4caf50;
+}
+
+.experiment-type-serial {
+  border-top: 4px solid #2196f3;
+}
+
+.experiment-type-i2c {
+  border-top: 4px solid #ff9800;
+}
+
+.experiment-type-spi {
+  border-top: 4px solid #9c27b0;
+}
+
+.experiment-type-adc {
+  border-top: 4px solid #f44336;
+}
+
+.experiment-type-timer {
+  border-top: 4px solid #795548;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .experiment-image-container {
+    height: 150px;
+  }
+  
+  .experiment-title {
+    font-size: 1.1rem;
+  }
+  
+  .experiment-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .experiment-card {
+    margin-bottom: 1rem;
+  }
+} 

@@ -1,0 +1,92 @@
+/* 项目对话框样式 */
+.project-dialog {
+  width: 500px;
+  max-width: 90vw;
+}
+
+/* 对话框标签页 */
+.dialog-tabs {
+  display: flex;
+  background-color: #252526;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.dialog-tab {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dialog-tab.active {
+  background-color: #1e1e1e;
+  border-top: 2px solid #0078d7;
+}
+
+/* 表单组 */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+/* 按钮样式 */
+.primary-button {
+  background-color: #0078d7;
+}
+
+.primary-button:hover {
+  background-color: #106ebe;
+}
+
+.primary-button:disabled {
+  background-color: #4a5568;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background-color: #4a5568;
+}
+
+.cancel-button:hover {
+  background-color: #2d3748;
+}
+
+/* 无项目消息 */
+.no-projects-message {
+  padding: 16px;
+  text-align: center;
+  color: #a0aec0;
+}

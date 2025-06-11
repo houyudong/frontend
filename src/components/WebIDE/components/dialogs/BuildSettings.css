@@ -1,0 +1,75 @@
+/* 构建设置对话框样式 */
+.build-settings-dialog {
+  width: 550px;
+  max-width: 90vw;
+}
+
+/* 帮助文本 */
+.help-text {
+  font-size: 0.85rem;
+  color: #a0aec0;
+  margin-top: 4px;
+}
+
+/* 复选框标签 */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #e2e8f0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+/* 表单组 */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: inherit;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+/* 按钮样式 */
+.primary-button {
+  background-color: #0078d7;
+}
+
+.primary-button:hover {
+  background-color: #106ebe;
+}
+
+.cancel-button {
+  background-color: #4a5568;
+}
+
+.cancel-button:hover {
+  background-color: #2d3748;
+}

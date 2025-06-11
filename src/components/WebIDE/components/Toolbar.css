@@ -1,0 +1,189 @@
+/* 工具栏容器 - 简化版 */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  background-color: #252526;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+
+
+/* 主工具栏 */
+.toolbar-main {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px;
+  height: 32px; /* 减小工具栏高度 */
+}
+
+/* 工具栏分区 */
+.toolbar-section {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* 工具栏分隔线 */
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #ddd;
+  margin: 0 4px;
+}
+
+/* 工具栏按钮 */
+.toolbar-button {
+  background: none;
+  color: #333;
+  border: none;
+  border-radius: 3px;
+  min-width: 26px;
+  height: 26px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 6px;
+}
+
+.toolbar-button:hover {
+  background-color: #e0e0e0;
+}
+
+.toolbar-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 主要按钮样式 */
+.toolbar-button-primary {
+  background-color: #0e639c;
+  color: #ffffff;
+  min-width: 60px;
+  padding: 0 8px;
+}
+
+.toolbar-button-primary:hover {
+  background-color: #1177bb;
+}
+
+.toolbar-button-primary:disabled {
+  background-color: #0e639c;
+  opacity: 0.5;
+}
+
+/* 主页按钮样式 */
+.toolbar-button-home {
+  background-color: #28a745;
+  color: #ffffff;
+  min-width: 60px;
+  padding: 0 8px;
+  font-weight: bold;
+}
+
+.toolbar-button-home:hover {
+  background-color: #218838;
+}
+
+/* 按钮文本 */
+.button-text {
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* 按钮徽章 - 用于显示状态 */
+.toolbar-button-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #0e639c;
+  animation: pulse 1.5s infinite;
+}
+
+.toolbar-button-badge.success {
+  background-color: #4d8c4a;
+  animation: none;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+/* 连接状态按钮 */
+.toolbar-button.connected {
+  color: #4d8c4a;
+}
+
+/* 工具栏芯片 - 用于显示信息 */
+.toolbar-chip {
+  display: flex;
+  align-items: center;
+  background-color: #3c3c3c;
+  border-radius: 3px;
+  padding: 0 8px;
+  height: 28px;
+  margin-right: 8px;
+}
+
+.toolbar-chip-label {
+  font-size: 12px;
+  color: #cccccc;
+  margin-right: 4px;
+}
+
+.toolbar-chip-value {
+  font-size: 12px;
+  color: #ffffff;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* MCU选择下拉框 */
+.mcu-select {
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  height: 20px;
+  max-width: 120px;
+}
+
+.mcu-select:focus {
+  outline: none;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+  .toolbar-menu {
+    overflow-x: auto;
+  }
+
+  .toolbar-main {
+    flex-wrap: wrap;
+    height: auto;
+  }
+
+  .toolbar-section {
+    margin-bottom: 4px;
+  }
+}

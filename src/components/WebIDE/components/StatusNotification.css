@@ -1,0 +1,186 @@
+.status-notification {
+  position: relative;
+  margin: 0 0 16px 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #252526;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+  border-left: 4px solid #3c3c3c;
+  max-width: 100%;
+  width: 100%;
+}
+
+.status-notification.closing {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+/* 通知类型样式 */
+.status-notification.error {
+  border-left-color: #f44747;
+}
+
+.status-notification.warning {
+  border-left-color: #cca700;
+}
+
+.status-notification.success {
+  border-left-color: #6A9955;
+}
+
+.status-notification.info {
+  border-left-color: #3794ff;
+}
+
+/* 通知头部 */
+.notification-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.notification-icon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.notification-icon.error {
+  color: #f44747;
+}
+
+.notification-icon.warning {
+  color: #cca700;
+}
+
+.notification-icon.success {
+  color: #6A9955;
+}
+
+.notification-icon.info {
+  color: #3794ff;
+}
+
+.notification-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e2e8f0;
+  flex: 1;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #ffffff;
+}
+
+/* 通知内容 */
+.notification-body {
+  padding: 12px 16px;
+  color: #e2e8f0;
+}
+
+.notification-body p {
+  margin: 0 0 8px 0;
+  line-height: 1.5;
+}
+
+.notification-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* 通知操作按钮 */
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px 16px;
+}
+
+.action-button {
+  padding: 6px 12px;
+  background-color: #3c3c3c;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-button:hover {
+  background-color: #505050;
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* 动画 */
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+/* 故障排除部分 */
+.troubleshooting-section {
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 12px;
+  border-left: 3px solid #3794ff;
+}
+
+.troubleshooting-section h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.troubleshooting-section ol,
+.troubleshooting-section ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.troubleshooting-section li {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.troubleshooting-section li:last-child {
+  margin-bottom: 0;
+}

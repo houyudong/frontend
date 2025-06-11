@@ -1,0 +1,310 @@
+/* 主容器样式 */
+.webide-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* 主内容区域 */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  width: 100%; /* 确保占满整个宽度 */
+  height: 100%; /* 使用100%高度 */
+  margin: 0; /* 移除外边距 */
+  padding: 0; /* 移除内边距 */
+  gap: 0; /* 移除元素之间的间距 */
+}
+
+/* 活动栏 - 最左侧的图标栏 */
+.activity-bar {
+  width: 40px;
+  height: 100%;
+  background-color: #333333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5px;
+  z-index: 10;
+  flex-shrink: 0; /* 防止被压缩 */
+}
+
+.activity-bar-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #858585;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.activity-bar-icon:hover {
+  color: #ffffff;
+}
+
+.activity-bar-icon.active {
+  color: #ffffff;
+  border-left: 2px solid #007acc;
+}
+
+/* 侧边栏 - 包含项目浏览器等 */
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #252526;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #3c3c3c;
+  border-left: 1px solid #3c3c3c; /* 添加左边框 */
+  overflow-y: auto;
+  flex-shrink: 0; /* 防止侧边栏被压缩 */
+  padding: 0; /* 移除内边距 */
+  margin-left: 0; /* 确保没有左边距 */
+}
+
+.sidebar-header {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #bbbbbb;
+  background-color: #252526;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+/* 当没有内容时隐藏侧边栏标题 */
+.sidebar-header:empty {
+  display: none;
+}
+
+/* 编辑器和输出面板容器 */
+.editor-output-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: calc(100% - 290px); /* 减去侧边栏和活动栏宽度 */
+  margin: 0; /* 移除外边距 */
+  padding: 0; /* 移除内边距 */
+  border-left: 1px solid #3c3c3c; /* 添加左边框 */
+}
+
+/* 编辑器标签栏 */
+.editor-tabs {
+  height: 35px;
+  background-color: #252526;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #3c3c3c;
+  border-top: none; /* 移除顶部边框 */
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+}
+
+.editor-tab {
+  height: 35px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  background-color: #2d2d2d;
+  border-right: 1px solid #3c3c3c;
+  color: #969696;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 120px;
+  justify-content: space-between;
+}
+
+.editor-tab.active {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-top: 2px solid #007acc;
+}
+
+.editor-tab-close {
+  margin-left: 8px;
+  font-size: 14px;
+  opacity: 0.7;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.editor-tab-close:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.editor-tab-name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 编辑器内容区域 */
+.editor-content {
+  flex: 1;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  min-height: 500px; /* 确保编辑器有足够的高度 */
+  width: 100%; /* 确保占满整个宽度 */
+  border: none; /* 移除边框 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 输出面板 */
+.output-panel {
+  display: flex;
+  flex-direction: column;
+  height: 200px; /* 减小输出面板高度 */
+  border-top: 1px solid #3c3c3c;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  position: relative;
+}
+
+.panel-resize-handle {
+  height: 4px;
+  background-color: #1e1e1e;
+  cursor: ns-resize;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+/* 标签按钮容器 */
+.tab-buttons {
+  display: flex;
+  background-color: #252526;
+  border-bottom: 1px solid #3c3c3c;
+  height: 35px;
+}
+
+/* 标签按钮 */
+.tab-button {
+  padding: 0 16px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #969696;
+  font-size: 13px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.tab-button:hover {
+  background-color: #2a2d2e;
+}
+
+.tab-button.active {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-top: 1px solid #007acc;
+}
+
+/* 标签内容区域 */
+.tab-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #1e1e1e;
+  padding: 0;
+}
+
+/* 通用滚动条样式 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* 模板文件区域 */
+.template-files-section {
+  margin-top: 20px;
+  border-top: 1px solid #3c3c3c;
+  padding-top: 10px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.template-files-section h3 {
+  padding: 0 10px;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: normal;
+  color: #cccccc;
+}
+
+/* 标签间隔 */
+.tab-spacer {
+  flex: 1;
+}
+
+/* 清除按钮 */
+.clear-button {
+  background: none;
+  border: none;
+  color: #969696;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 10px;
+  height: 35px;
+}
+
+.clear-button:hover {
+  color: #ffffff;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 1200px) {
+  .output-panel {
+    height: 200px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .output-panel {
+    height: 180px;
+  }
+}

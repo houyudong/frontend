@@ -1,0 +1,61 @@
+/* 构建面板容器 */
+.build-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 构建输出区域 */
+.build-output {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 输出内容 */
+.output-content {
+  padding: 8px 12px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  background-color: #1e1e1e;
+  line-height: 1.4;
+  color: #f0f0f0;
+}
+
+/* 错误列表 */
+.build-errors {
+  margin-top: 12px;
+  border-top: 1px solid #3c3c3c;
+  padding-top: 8px;
+}
+
+/* 错误标题 */
+.build-errors h4 {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #f48771;
+}
+
+/* 错误项 */
+.error-item {
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.error-item:hover {
+  background-color: #2a2d2e;
+}
+
+/* 错误位置 */
+.error-location {
+  color: #569cd6;
+}
+
+/* 错误消息 */
+.error-message {
+  color: #f48771;
+}
