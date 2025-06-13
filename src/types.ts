@@ -1,5 +1,5 @@
 /**
- * ¿Î³ÌÀàĞÍ¶¨Òå
+ * è¯¾ç¨‹ç±»å‹å®šä¹‰
  */
 export interface Course {
   id: string;
@@ -12,7 +12,7 @@ export interface Course {
 }
 
 /**
- * ÊµÑéÀàĞÍ¶¨Òå
+ * å®éªŒç±»å‹å®šä¹‰
  */
 export interface Experiment {
   id: string;
@@ -31,7 +31,7 @@ export interface Experiment {
 }
 
 /**
- * ÊµÑé²½ÖèÀàĞÍ¶¨Òå
+ * å®éªŒæ­¥éª¤ç±»å‹å®šä¹‰
  */
 export interface ExperimentStep {
   title: string;
@@ -41,7 +41,7 @@ export interface ExperimentStep {
 }
 
 /**
- * ×ÊÔ´Á´½ÓÀàĞÍ¶¨Òå
+ * èµ„æºé“¾æ¥ç±»å‹å®šä¹‰
  */
 export interface ResourceLink {
   title: string;
@@ -50,7 +50,7 @@ export interface ResourceLink {
 }
 
 /**
- * ´úÂëÉú³ÉÇëÇóÀàĞÍ¶¨Òå
+ * ä»£ç ç”Ÿæˆè¯·æ±‚ç±»å‹å®šä¹‰
  */
 export interface CodeGenerationRequest {
   mcuModel: string;
@@ -59,7 +59,7 @@ export interface CodeGenerationRequest {
 }
 
 /**
- * ´úÂëÉú³ÉÏìÓ¦ÀàĞÍ¶¨Òå
+ * ä»£ç ç”Ÿæˆå“åº”ç±»å‹å®šä¹‰
  */
 export interface CodeGenerationResponse {
   code: string;
@@ -68,12 +68,12 @@ export interface CodeGenerationResponse {
 }
 
 /**
- * ÊµÑé¹ıÂËÆ÷ÀàĞÍ
+ * å®éªŒéš¾åº¦è¿‡æ»¤å™¨
  */
 export type DifficultyFilter = 'all' | 'beginner' | 'intermediate' | 'advanced';
 
 /**
- * ÓÃ»§ÀàĞÍ¶¨Òå
+ * ç”¨æˆ·ç±»å‹å®šä¹‰
  */
 export interface User {
   id: string;
@@ -89,7 +89,7 @@ export interface User {
 }
 
 /**
- * ¿Î³ÌÄ£¿éÀàĞÍ¶¨Òå
+ * è¯¾ç¨‹æ¨¡å—ç±»å‹å®šä¹‰
  */
 export interface CourseModule {
   id: string;
@@ -100,7 +100,7 @@ export interface CourseModule {
 }
 
 /**
- * ¿Î³ÌÕÂ½ÚÀàĞÍ¶¨Òå
+ * è¯¾ç¨‹ç« èŠ‚ç±»å‹å®šä¹‰
  */
 export interface CourseLesson {
   id: string;
@@ -114,7 +114,7 @@ export interface CourseLesson {
 }
 
 /**
- * ÂÛÌ³Ìû×ÓÀàĞÍ¶¨Òå
+ * è®ºå›å¸–å­ç±»å‹å®šä¹‰
  */
 export interface ForumPost {
   id: string;
@@ -128,7 +128,7 @@ export interface ForumPost {
 }
 
 /**
- * ÂÛÌ³»Ø¸´ÀàĞÍ¶¨Òå
+ * è®ºå›å›å¤ç±»å‹å®šä¹‰
  */
 export interface ForumReply {
   id: string;
