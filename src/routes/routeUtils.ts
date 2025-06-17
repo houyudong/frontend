@@ -6,17 +6,11 @@
 
 import routes from './routes';
 import { RouteConfig } from './routes';
-import navigation, { getAccessibleNavigation } from './navigation';
+import navigation, { getAccessibleNavigation, NavItem } from './navigation';
 
 interface Breadcrumb {
   title: string;
   path: string;
-}
-
-interface NavItem {
-  title: string;
-  path: string;
-  children?: NavItem[];
 }
 
 /**

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../services/apiClient';
+import { authAPI } from '../services/apiService';
 
 interface User {
   id: string;
@@ -37,8 +37,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await apiClient.get('/auth/me');
-        setUser(response.data);
+        const response = await authAPI.getCurrentUser();
+        setUser(response);
       } catch (error) {
         setUser(null);
       } finally {
@@ -52,8 +52,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 登录
   const login = async (username: string, password: string) => {
     try {
-      const response = await apiClient.post('/auth/login', { username, password });
-      setUser(response.data.user);
+      const response = await authAPI.login(username, password);
+      const { user, token } = response;
+      
+      // 保存用户信息和令牌
+      setUser(user);
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       
       // 获取重定向路径
       const redirectPath = sessionStorage.getItem('redirectPath') || '/';
@@ -61,6 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       navigate(redirectPath);
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   };
@@ -68,10 +74,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 登出
   const logout = async () => {
     try {
-      await apiClient.post('/auth/logout');
+      await authAPI.logout();
       setUser(null);
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
       navigate('/login');
     } catch (error) {
+      console.error('Logout error:', error);
       throw error;
     }
   };
@@ -79,12 +88,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 注册
   const register = async (username: string, email: string, password: string) => {
     try {
-      const response = await apiClient.post('/auth/register', {
-        username,
-        email,
-        password
-      });
-      setUser(response.data.user);
+      const response = await authAPI.register({ username, email, password });
+      setUser(response.user);
       navigate('/');
     } catch (error) {
       throw error;
@@ -93,10 +98,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // 更新用户信息
   const updateUser = async (userData: Partial<User>) => {
+    if (!user) {
+      throw new Error('用户未登录');
+    }
     try {
-      const response = await apiClient.put('/auth/user', userData);
-      setUser(response.data);
+      const updatedUser = await authAPI.updateUser(user.id, userData);
+      setUser(updatedUser);
+      return updatedUser;
     } catch (error) {
+      console.error('更新用户信息失败:', error);
       throw error;
     }
   };
@@ -104,10 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 更新密码
   const updatePassword = async (oldPassword: string, newPassword: string) => {
     try {
-      await apiClient.put('/auth/password', {
-        oldPassword,
-        newPassword
-      });
+      await authAPI.updatePassword(oldPassword, newPassword);
     } catch (error) {
       throw error;
     }

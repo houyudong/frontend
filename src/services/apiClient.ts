@@ -71,7 +71,6 @@ export const createApiClient = (options: ApiClientOptions = {}): ApiClient => {
       const token = localStorage.getItem('auth_token');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log('添加认证令牌到请求头:', token);
       }
 
       // 开发环境下添加认证绕过头（仅对非登录请求）
@@ -80,6 +79,7 @@ export const createApiClient = (options: ApiClientOptions = {}): ApiClient => {
         if (!token && config.headers) {
           config.headers['X-Bypass-Auth'] = 'true';
           config.headers['X-User-ID'] = '123e4567-e89b-12d3-a456-426614174000';
+          config.headers['X-User-Role'] = 'student';
         }
       }
 
@@ -91,6 +91,9 @@ export const createApiClient = (options: ApiClientOptions = {}): ApiClient => {
         }
         if (config.data) {
           console.log('Data:', config.data);
+        }
+        if (config.headers) {
+          console.log('Headers:', config.headers);
         }
       }
 
@@ -189,7 +192,16 @@ export const createApiClient = (options: ApiClientOptions = {}): ApiClient => {
    * @returns 响应Promise
    */
   client.post = <T = any>(url: string, data: any = {}, config: AxiosRequestConfig = {}) => {
-    return client.post<T>(url, data, config);
+    return axios.post<T>(url, data, {
+      ...config,
+      baseURL: client.defaults.baseURL,
+      headers: {
+        ...(client.defaults.headers.common || {}),
+        ...(config.headers || {}),
+      },
+      timeout: client.defaults.timeout,
+      withCredentials: client.defaults.withCredentials,
+    });
   };
 
   /**

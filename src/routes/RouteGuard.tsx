@@ -34,6 +34,13 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   const { isAuthenticated, role, loading } = useAuth();
   const location = useLocation();
 
+  // 检查本地存储中的认证状态
+  const checkLocalAuth = () => {
+    const token = localStorage.getItem('auth_token');
+    const user = localStorage.getItem('user');
+    return !!(token && user);
+  };
+
   // 记录访问历史，用于登录后重定向
   useEffect(() => {
     if (auth && !isAuthenticated && !loading && location.pathname !== '/login') {
@@ -51,7 +58,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   }
 
   // 如果路由需要认证但用户未登录，重定向到登录页
-  if (auth && !isAuthenticated) {
+  if (auth && !isAuthenticated && !checkLocalAuth()) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

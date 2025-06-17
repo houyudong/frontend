@@ -109,6 +109,17 @@ export const authAPI = {
   },
 
   /**
+   * 更新用户信息
+   * @param {string} userId - 用户ID
+   * @param {Object} userData - 用户数据
+   * @returns {Promise<Object>} - 更新结果
+   */
+  updateUser: async (userId: string, userData: any): Promise<any> => {
+    const response = await apiClient.put(endpoints.AUTH.CURRENT_USER, userData);
+    return response.data;
+  },
+
+  /**
    * 更新用户密码
    * @param {string} oldPassword - 当前密码
    * @param {string} newPassword - 新密码
