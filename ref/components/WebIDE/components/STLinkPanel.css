@@ -1,0 +1,50 @@
+/* ST-Link信息面板 */
+.stlink-info-panel {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  z-index: 100;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  max-width: 300px;
+  border: 1px solid #444;
+}
+
+/* 信息内容 */
+.stlink-info {
+  padding: 15px;
+  color: #fff;
+}
+
+/* 标题 */
+.stlink-info h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #4fc3f7;
+  border-bottom: 1px solid #444;
+  padding-bottom: 8px;
+}
+
+/* 信息表格 */
+.stlink-info table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stlink-info td {
+  padding: 6px 2px;
+  font-size: 14px;
+}
+
+.stlink-info td:first-child {
+  font-weight: 500;
+  color: #aaa;
+  width: 40%;
+}
+
+.stlink-info td:last-child {
+  color: #eee;
+}

@@ -1,0 +1,81 @@
+/* 调试控制台容器 */
+.debug-console {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 控制台头部 */
+.console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+/* 控制台标题 */
+.console-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 清除按钮 */
+.clear-button {
+  background-color: #3c3c3c;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background-color: #505050;
+}
+
+/* 控制台样式输出 */
+.console-style {
+  font-family: 'Consolas', 'Courier New', monospace;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  padding: 10px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: none;
+  height: 100%;
+}
+
+.console-style pre {
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+}
+
+/* 控制台滚动条 */
+.console-style::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.console-style::-webkit-scrollbar-track {
+  background: #252526;
+}
+
+.console-style::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 0;
+}
+
+.console-style::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}

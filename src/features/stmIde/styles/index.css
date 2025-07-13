@@ -1,0 +1,191 @@
+/* 主样式入口文件 */
+@import './tailwind.css';
+
+/* 全局样式重置 */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 文件修改状态样式 */
+.file-tab {
+  position: relative;
+}
+
+.file-tab.modified::after {
+  content: '●';
+  color: #f59e0b;
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+.file-tab.saved::after {
+  display: none;
+}
+
+/* 错误边界样式 */
+.error-boundary {
+  padding: 20px;
+  text-align: center;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  margin: 20px;
+}
+
+/* 加载状态样式 */
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 工具提示样式 */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+}
+
+.tooltip:hover::before {
+  opacity: 1;
+}
+
+/* ===== 断点装饰样式 ===== */
+
+/* 共用样式基类 */
+.breakpoint-glyph::before,
+.breakpoint-glyph-verified::before,
+.breakpoint-glyph-unverified::before,
+.breakpoint-glyph-disabled::before,
+.breakpoint-glyph-conditional::before,
+.breakpoint-hover::before,
+.breakpoint-hit-glyph::before {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+}
+
+/* 基础断点样式 - 实心红色圆点 */
+.breakpoint-glyph::before,
+.breakpoint-glyph-verified::before {
+  content: '●';
+  color: #e53e3e;
+}
+
+/* 未验证断点 - 空心红色圆点 */
+.breakpoint-glyph-unverified::before {
+  content: '○';
+  color: #e53e3e;
+}
+
+/* 禁用断点 - 灰色圆点 */
+.breakpoint-glyph-disabled::before {
+  content: '●';
+  color: #a0a0a0;
+}
+
+/* 条件断点 - 橙色菱形 */
+.breakpoint-glyph-conditional::before {
+  content: '◆';
+  color: #f59e0b;
+  font-size: 12px;
+}
+
+/* 🔧 统一：断点命中样式 - 与普通断点保持一致 */
+.breakpoint-glyph-hit::before {
+  content: '●';
+  color: #e53e3e; /* 与普通断点相同颜色 */
+  font-weight: normal; /* 与普通断点相同粗细 */
+  font-size: inherit; /* 与普通断点相同大小 */
+}
+
+/* 断点悬停提示 - 空心灰色圆点 */
+.breakpoint-hover::before {
+  content: '○';
+  color: #cbd5e0;
+  opacity: 0.6;
+}
+
+/* 当前执行行高亮 */
+.current-line-highlight {
+  background-color: rgba(255, 255, 0, 0.2) !important;
+  border-left: 3px solid #f59e0b !important;
+}
+
+/* 🔧 注意：current-line-glyph的::before样式已移除，避免与Monaco编辑器CSS冲突 */
+/* 当前执行行的绿色三角形现在完全由MonacoEditor.tsx中的CSS处理 */
+
+/* 断点命中图标（带动画） */
+.breakpoint-hit-glyph::before {
+  content: '●';
+  color: #e53e3e;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* 脉冲动画效果 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

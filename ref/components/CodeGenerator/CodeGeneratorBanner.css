@@ -1,0 +1,97 @@
+/* 代码生成器banner样式 */
+.code-generator-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a2e;
+  padding: 0 15px;
+  height: 40px;
+  border-bottom: 1px solid #4a4a6a;
+  transition: all 0.5s ease-in-out;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.code-generator-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3498db, #9b59b6, #3498db);
+  background-size: 200% 100%;
+  animation: gradientFlow 3s linear infinite;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.banner-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.banner-hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.banner-left {
+  display: flex;
+  align-items: center;
+}
+
+.banner-title {
+  margin-left: 15px;
+  font-size: 14px;
+  color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-title::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #3498db;
+  transform: translateX(-100%);
+  animation: slideIn 1s forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes slideIn {
+  to { transform: translateX(0); }
+}
+
+.banner-home-button {
+  display: flex;
+  align-items: center;
+  background-color: #3498db;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.banner-home-button:hover {
+  background-color: #2980b9;
+  text-decoration: none;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.banner-home-button .home-icon {
+  margin-right: 5px;
+  font-size: 14px;
+}

@@ -12,7 +12,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   return {
     plugins: [react()],
     server: {
-      port: 3000,
+      port: 5173,
       open: true,
       proxy: {
         '/api': {

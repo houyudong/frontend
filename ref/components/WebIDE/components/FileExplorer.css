@@ -1,0 +1,122 @@
+/* 文件浏览器容器 */
+.file-explorer {
+  width: 250px;
+  background-color: #252526;
+  border-right: 1px solid #3c3c3c;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 文件浏览器头部 */
+.file-explorer-header {
+  padding: 8px 12px;
+  font-weight: bold;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 文件树 */
+.file-tree {
+  padding: 4px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 文件树项 */
+.file-tree-item {
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-tree-item:hover {
+  background-color: #2a2d2e;
+}
+
+.file-tree-item.active {
+  background-color: #094771;
+}
+
+/* 文件夹图标 */
+.folder-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+}
+
+/* 图标 */
+.icon {
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+.file-tree-item.folder .icon {
+  color: #e8ab53;
+}
+
+.file-tree-item.file .icon {
+  color: #75beff;
+}
+
+/* 名称 */
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+/* 文件夹子项 */
+.folder-children {
+  width: 100%;
+}
+
+/* 加载和错误状态 */
+.loading, .error {
+  padding: 10px;
+  text-align: center;
+  color: #cccccc;
+}
+
+.error {
+  color: #f48771;
+}
+
+/* 图标按钮 */
+.icon-button {
+  background: none;
+  border: none;
+  color: #f0f0f0;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  color: #75beff;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 992px) {
+  .file-explorer {
+    width: 220px;
+  }
+}

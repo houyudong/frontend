@@ -1,0 +1,69 @@
+/* 烧录面板容器 */
+.flash-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 烧录面板头部 */
+.flash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+/* 烧录面板标题 */
+.flash-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 固件文件选择器 */
+.hex-file-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hex-file-selector label {
+  font-size: 0.9rem;
+}
+
+.hex-file-selector select {
+  background-color: #3c3c3c;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+}
+
+/* 烧录输出区域 */
+.flash-output {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 烧录进度条 */
+.flash-progress {
+  margin: 10px 0;
+  height: 20px;
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #0d6efd;
+  color: white;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  transition: width 0.2s ease;
+}

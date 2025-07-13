@@ -1,0 +1,373 @@
+/* 主样式文件 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义样式 */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* 文件修改状态指示器 */
+  .file-modified-indicator {
+    @apply inline-block w-2 h-2 bg-orange-500 rounded-full ml-1;
+  }
+
+  .file-modified-indicator.saved {
+    @apply bg-transparent;
+  }
+
+  /* 按钮样式 */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded text-sm font-medium transition-colors;
+  }
+
+  .btn-disabled {
+    @apply bg-gray-100 text-gray-400 cursor-not-allowed;
+  }
+}
+
+/* STM32 AI调试工具 - Tailwind CSS v3 配置 */
+
+/* 基础重置 */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #374151;
+    background: #f3f4f6;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  #root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded border transition-all duration-150;
+    @apply bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-50 disabled:hover:border-gray-200;
+    @apply focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 border-blue-600 text-white hover:bg-blue-700 hover:border-blue-700;
+    @apply focus:ring-blue-500;
+  }
+
+  .btn-success {
+    @apply bg-green-600 border-green-600 text-white hover:bg-green-700 hover:border-green-700;
+    @apply focus:ring-green-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 border-red-600 text-white hover:bg-red-700 hover:border-red-700;
+    @apply focus:ring-red-500;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400;
+    @apply focus:ring-gray-500;
+  }
+
+  /* 内联编辑动画 */
+  .inline-editing {
+    @apply animate-slide-in;
+  }
+
+  /* React Resizable Panels 样式 */
+  [data-panel-resize-handle-enabled] {
+    transition: background-color 0.2s ease;
+  }
+
+  [data-panel-resize-handle-enabled]:hover {
+    background-color: #d1d5db !important;
+  }
+
+  /* 模态框样式 - 修复溢出问题 */
+  .modal {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+    display: none; /* 默认隐藏 */
+  }
+
+  .modal.show {
+    display: flex !important;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-screen overflow-auto;
+  }
+
+  .modal-header {
+    @apply flex justify-between items-center p-4 border-b border-gray-200;
+  }
+
+  .modal-header h2 {
+    @apply text-lg font-semibold text-gray-900 m-0;
+  }
+
+  .modal-close {
+    @apply text-gray-400 hover:text-gray-600 text-2xl font-bold bg-transparent border-0 cursor-pointer;
+  }
+
+  .modal-body {
+    @apply p-4;
+  }
+
+  .modal-footer {
+    @apply flex justify-end gap-2 p-4 border-t border-gray-200;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-group label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .form-group input,
+  .form-group select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+
+  .form-text {
+    @apply text-xs text-gray-500 mt-1;
+  }
+
+  /* 防止内容溢出到状态栏下方 */
+  #main-split {
+    max-height: calc(100vh - 40px - 24px); /* 减去工具栏和状态栏高度 */
+  }
+
+  #bottom-panel {
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* 确保分割面板容器不会溢出 */
+  [data-panel-group] {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  [data-panel] {
+    overflow: hidden !important;
+  }
+}
+
+/* 自定义工具类 */
+@layer utilities {
+  .animate-slide-in {
+    animation: slideIn 0.2s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.2s ease-out;
+  }
+
+  .animate-device-disconnected {
+    animation: deviceDisconnectedPulse 2s ease-in-out infinite;
+  }
+
+  .animate-device-connecting {
+    animation: deviceConnecting 1s linear infinite;
+  }
+
+  .animate-device-error {
+    animation: deviceErrorPulse 2s ease-in-out infinite;
+  }
+
+  .animate-device-warning {
+    animation: deviceWarningPulse 1.5s ease-in-out infinite;
+  }
+
+  .animate-device-disconnected {
+    animation: deviceDisconnectedPulse 2s ease-in-out infinite;
+  }
+}
+
+/* 动画关键帧 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 设备状态动画 */
+@keyframes deviceDisconnectedPulse {
+  0% {
+    background-color: rgb(248, 215, 218);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+  }
+  50% {
+    background-color: rgb(241, 176, 183);
+    box-shadow: 0 0 0 8px rgba(220, 53, 69, 0.1);
+  }
+  100% {
+    background-color: rgb(248, 215, 218);
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.0);
+  }
+}
+
+@keyframes deviceConnecting {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+}
+
+/* 设备错误状态脉冲动画 */
+@keyframes deviceErrorPulse {
+  0% {
+    background-color: rgb(254, 242, 242);
+    border-color: rgb(252, 165, 165);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    background-color: rgb(254, 226, 226);
+    border-color: rgb(248, 113, 113);
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.1);
+  }
+  100% {
+    background-color: rgb(254, 242, 242);
+    border-color: rgb(252, 165, 165);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.0);
+  }
+}
+
+/* 设备警告状态脉冲动画 */
+@keyframes deviceWarningPulse {
+  0% {
+    background-color: rgb(255, 251, 235);
+    border-color: rgb(253, 224, 71);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    background-color: rgb(254, 243, 199);
+    border-color: rgb(251, 191, 36);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+  }
+  100% {
+    background-color: rgb(255, 251, 235);
+    border-color: rgb(253, 224, 71);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.0);
+  }
+}
+
+/* 设备断开状态脉冲动画 */
+@keyframes deviceDisconnectedPulse {
+  0% {
+    background-color: rgb(254, 242, 242);
+    border-color: rgb(252, 165, 165);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    background-color: rgb(254, 226, 226);
+    border-color: rgb(248, 113, 113);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.1);
+  }
+  100% {
+    background-color: rgb(254, 242, 242);
+    border-color: rgb(252, 165, 165);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.0);
+  }
+}
+
+/* 图标样式已迁移到 Lucide React 组件 */
+
+/* 全局样式修复 */
+* {
+  box-sizing: border-box;
+}
+
+/* 隐藏浏览器扩展注入的元素 */
+[data-extension-id] {
+  display: none !important;
+}
+
+/* 确保应用容器占满全屏 */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
