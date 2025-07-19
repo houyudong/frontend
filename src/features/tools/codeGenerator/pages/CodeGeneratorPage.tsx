@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 代码模板接口
 interface CodeTemplate {

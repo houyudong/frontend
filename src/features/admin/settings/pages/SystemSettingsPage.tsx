@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 系统配置接口
 interface SystemConfig {

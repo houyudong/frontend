@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import { useNavigate } from 'react-router-dom';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 数据分析接口
 interface AnalyticsData {
@@ -138,11 +139,12 @@ const mockAnalyticsData: AnalyticsData = {
 
 /**
  * AnalyticsPage - 数据分析页面
- * 
+ *
  * 教师查看学习数据分析和统计报表
  * 提供课程、实验、学生进度等多维度分析
  */
 const AnalyticsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'courses' | 'experiments' | 'students'>('overview');
@@ -225,91 +227,188 @@ const AnalyticsPage: React.FC = () => {
   return (
     <MainLayout>
       <div className="page-container">
-        {/* 页面标题 */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">数据分析</h1>
-          <p className="text-gray-600">查看学习数据统计和分析报表，优化教学效果</p>
+        {/* 页面标题 - 现代化设计 */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-emerald-600 to-green-800 rounded-2xl mb-8 shadow-xl">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-48 translate-x-48"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+
+          <div className="relative px-8 py-12">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-3">数据分析</h1>
+                <p className="text-green-100 text-lg mb-6 max-w-2xl">
+                  查看学习数据统计和分析报表，优化教学效果
+                </p>
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm">数据状态：实时更新</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span className="text-sm">分析 {analyticsData.overview.totalStudents} 名学生数据</span>
+                  </div>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  <span className="text-6xl">📊</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 标签导航 */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              {[
-                { id: 'overview', name: '总览', icon: '📊' },
-                { id: 'courses', name: '课程分析', icon: '📚' },
-                { id: 'experiments', name: '实验分析', icon: '🧪' },
-                { id: 'students', name: '学生进度', icon: '👥' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedTab(tab.id as any)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                    selectedTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <span className="mr-2">{tab.icon}</span>
-                  {tab.name}
-                </button>
-              ))}
-            </nav>
+        {/* 标签导航 - 现代化设计 */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">分析维度</h3>
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { id: 'overview', name: '总览', icon: '📊', color: 'from-green-500 to-green-600' },
+              { id: 'courses', name: '课程分析', icon: '📚', color: 'from-emerald-500 to-emerald-600' },
+              { id: 'experiments', name: '实验分析', icon: '🧪', color: 'from-teal-500 to-teal-600' },
+              { id: 'students', name: '学生进度', icon: '👥', color: 'from-cyan-500 to-cyan-600' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedTab(tab.id as any)}
+                className={`group p-4 rounded-xl border transition-all duration-300 text-left ${
+                  selectedTab === tab.id
+                    ? 'border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 shadow-md'
+                    : 'border-gray-200 hover:border-green-200 hover:shadow-md hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 bg-gradient-to-br ${tab.color} rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                    <span className="text-white text-lg">{tab.icon}</span>
+                  </div>
+                  <div>
+                    <h4 className={`font-semibold transition-colors ${
+                      selectedTab === tab.id ? 'text-green-700' : 'text-gray-900 group-hover:text-green-700'
+                    }`}>
+                      {tab.name}
+                    </h4>
+                  </div>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
         {/* 内容区域 */}
         {selectedTab === 'overview' && (
           <div className="space-y-8">
-            {/* 总览统计 */}
+            {/* 总览统计 - 现代化卡片设计 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="card text-center">
-                <div className="text-3xl font-bold text-blue-600">{analyticsData.overview.totalStudents}</div>
-                <div className="text-sm text-gray-600 mt-1">总学生数</div>
-                <div className="text-xs text-green-600 mt-1">
-                  活跃: {analyticsData.overview.activeStudents} ({Math.round(analyticsData.overview.activeStudents / analyticsData.overview.totalStudents * 100)}%)
+              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+                <div className="relative text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
+                    <span className="text-white text-2xl">👥</span>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{analyticsData.overview.totalStudents}</div>
+                  <div className="text-lg font-medium text-gray-700 mb-3">总学生数</div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    活跃: {analyticsData.overview.activeStudents} ({Math.round(analyticsData.overview.activeStudents / analyticsData.overview.totalStudents * 100)}%)
+                  </div>
                 </div>
               </div>
-              <div className="card text-center">
-                <div className="text-3xl font-bold text-green-600">{analyticsData.overview.avgCompletionRate}%</div>
-                <div className="text-sm text-gray-600 mt-1">平均完成率</div>
-                <div className="text-xs text-gray-500 mt-1">课程和实验综合</div>
+
+              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-200 hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+                <div className="relative text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
+                    <span className="text-white text-2xl">📈</span>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{analyticsData.overview.avgCompletionRate}%</div>
+                  <div className="text-lg font-medium text-gray-700 mb-3">平均完成率</div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
+                    课程和实验综合
+                  </div>
+                </div>
               </div>
-              <div className="card text-center">
-                <div className="text-3xl font-bold text-purple-600">{formatTime(analyticsData.overview.avgStudyTime)}</div>
-                <div className="text-sm text-gray-600 mt-1">平均学习时长</div>
-                <div className="text-xs text-gray-500 mt-1">每位学生</div>
+
+              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-teal-200 hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-teal-500/10 to-teal-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+                <div className="relative text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
+                    <span className="text-white text-2xl">⏰</span>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{formatTime(analyticsData.overview.avgStudyTime)}</div>
+                  <div className="text-lg font-medium text-gray-700 mb-3">平均学习时长</div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
+                    每位学生
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* 最近活动趋势 */}
-            <div className="card">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="font-medium text-gray-900">最近活动趋势</h3>
+            {/* 最近活动趋势 - 现代化设计 */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">最近活动趋势</h3>
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
               </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  {analyticsData.timeAnalytics.slice(-7).map((day, index) => (
-                    <div key={day.date} className="flex items-center justify-between">
+
+              <div className="space-y-4">
+                {analyticsData.timeAnalytics.slice(-7).map((day, index) => (
+                  <div key={day.date} className="group p-4 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-cyan-50 transition-all duration-300">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <span className="text-sm font-medium text-gray-900 w-20">
-                          {new Date(day.date).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
-                        </span>
-                        <div className="flex items-center space-x-6 text-sm text-gray-600">
-                          <span>👥 {day.activeUsers} 活跃用户</span>
-                          <span>⏱️ {formatTime(day.studyTime)} 学习时长</span>
-                          <span>✅ {day.completedTasks} 完成任务</span>
+                        <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md">
+                          <span className="text-white font-bold text-sm">
+                            {new Date(day.date).getDate()}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900 group-hover:text-cyan-700 transition-colors">
+                            {new Date(day.date).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
+                          </div>
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 group-hover:text-cyan-600 transition-colors mt-1">
+                            <span className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              {day.activeUsers} 活跃用户
+                            </span>
+                            <span className="flex items-center">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                              {formatTime(day.studyTime)} 学习时长
+                            </span>
+                            <span className="flex items-center">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                              {day.completedTasks} 完成任务
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="w-32 bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 h-2 rounded-full"
-                          style={{ width: `${(day.activeUsers / analyticsData.overview.totalStudents) * 100}%` }}
-                        />
+                      <div className="flex items-center space-x-3">
+                        <div className="w-32 bg-gray-200 rounded-full h-3">
+                          <div
+                            className="bg-gradient-to-r from-cyan-500 to-cyan-600 h-3 rounded-full transition-all duration-500"
+                            style={{ width: `${(day.activeUsers / analyticsData.overview.totalStudents) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 w-12 text-right">
+                          {Math.round((day.activeUsers / analyticsData.overview.totalStudents) * 100)}%
+                        </span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -318,46 +417,81 @@ const AnalyticsPage: React.FC = () => {
         {selectedTab === 'courses' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 gap-6">
-              {analyticsData.courseAnalytics.map((course) => (
-                <div key={course.courseId} className="card">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
+              {analyticsData.courseAnalytics.map((course, index) => (
+                <div key={course.courseId} className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-start space-x-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+                        index % 4 === 0 ? 'bg-gradient-to-br from-green-500 to-green-600' :
+                        index % 4 === 1 ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' :
+                        index % 4 === 2 ? 'bg-gradient-to-br from-teal-500 to-teal-600' :
+                        'bg-gradient-to-br from-cyan-500 to-cyan-600'
+                      }`}>
+                        <span className="text-white text-lg">📚</span>
+                      </div>
                       <div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">{course.courseName}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(course.difficulty)}`}>
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-700 transition-colors mb-2">{course.courseName}</h3>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(course.difficulty)}`}>
                           {getDifficultyText(course.difficulty)}
                         </span>
                       </div>
-                      <div className="text-right">
-                        <div className={`text-2xl font-bold ${getScoreColor(course.avgScore)}`}>
-                          {course.avgScore}分
-                        </div>
-                        <div className="text-sm text-gray-600">平均分数</div>
-                      </div>
                     </div>
+                    <div className="text-right">
+                      <div className={`text-3xl font-bold ${getScoreColor(course.avgScore)} mb-1`}>
+                        {course.avgScore}
+                      </div>
+                      <div className="text-sm text-gray-600">平均分数</div>
+                    </div>
+                  </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-blue-600">{course.enrolledStudents}</div>
-                        <div className="text-sm text-gray-600">报名学生</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <span className="text-white text-lg">👥</span>
                       </div>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-green-600">{course.completedStudents}</div>
-                        <div className="text-sm text-gray-600">完成学生</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-purple-600">{course.completionRate}%</div>
-                        <div className="text-sm text-gray-600">完成率</div>
-                      </div>
-                      <div className="col-span-1 md:col-span-1">
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                          <div
-                            className="bg-blue-600 h-2 rounded-full"
-                            style={{ width: `${course.completionRate}%` }}
-                          />
-                        </div>
-                      </div>
+                      <div className="text-2xl font-bold text-blue-600 mb-1">{course.enrolledStudents}</div>
+                      <div className="text-sm text-blue-700 font-medium">报名学生</div>
                     </div>
+                    <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                      <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <span className="text-white text-lg">✅</span>
+                      </div>
+                      <div className="text-2xl font-bold text-green-600 mb-1">{course.completedStudents}</div>
+                      <div className="text-sm text-green-700 font-medium">完成学生</div>
+                    </div>
+                    <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <span className="text-white text-lg">📊</span>
+                      </div>
+                      <div className="text-2xl font-bold text-purple-600 mb-1">{course.completionRate}%</div>
+                      <div className="text-sm text-purple-700 font-medium">完成率</div>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">课程进度</span>
+                      <span className="text-sm font-medium text-gray-900">{course.completionRate}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${course.completionRate}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 操作按钮 */}
+                  <div className="flex justify-end pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => navigate(`/teacher/analytics/course/${course.courseId}`)}
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      查看详细分析
+                    </button>
                   </div>
                 </div>
               ))}
@@ -420,6 +554,19 @@ const AnalyticsPage: React.FC = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* 操作按钮 */}
+                    <div className="flex justify-end pt-4 border-t border-gray-200">
+                      <button
+                        onClick={() => navigate(`/teacher/analytics/experiment/${experiment.experimentId}`)}
+                        className="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        查看详细分析
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -465,6 +612,19 @@ const AnalyticsPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* 操作按钮 */}
+              <div className="flex justify-end p-4 border-t border-gray-200">
+                <button
+                  onClick={() => navigate('/teacher/analytics/students')}
+                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  查看详细进度分析
+                </button>
               </div>
             </div>
 

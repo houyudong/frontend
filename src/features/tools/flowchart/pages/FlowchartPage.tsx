@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 节点类型定义
 const nodeTypes = {

@@ -1,163 +1,361 @@
 import React from 'react';
 import { useAuth } from '../../../../app/providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 /**
  * AdminDashboard - 管理员仪表板
- * 
+ *
  * 管理员角色的主要入口页面，展示系统概览和管理功能
- * 遵循奥卡姆原则：简洁而强大的系统管理界面
+ * 现代化设计风格，提供强大的系统管理界面
  */
 const AdminDashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // 模拟数据
+  // 系统统计数据
   const stats = {
     totalUsers: 156,
     totalStudents: 120,
     totalTeachers: 15,
-    systemHealth: 98
+    totalAdmins: 3,
+    systemHealth: 98,
+    activeUsers: 89,
+    todayLogins: 45,
+    systemUptime: 99.8
   };
 
+  // 快捷操作
+  const quickActions = [
+    {
+      title: '用户管理',
+      description: '管理系统用户权限',
+      icon: '👥',
+      color: 'from-blue-500 to-blue-600',
+      action: () => navigate('/admin/users')
+    },
+    {
+      title: '系统设置',
+      description: '配置系统参数',
+      icon: '⚙️',
+      color: 'from-gray-500 to-gray-600',
+      action: () => navigate('/admin/settings')
+    },
+    {
+      title: '数据报告',
+      description: '查看系统报告',
+      icon: '📊',
+      color: 'from-green-500 to-green-600',
+      action: () => navigate('/admin/reports')
+    }
+  ];
+
+  // 系统状态监控
   const systemStatus = [
-    { name: '数据库', status: 'healthy', uptime: '99.9%' },
-    { name: 'API服务', status: 'healthy', uptime: '99.8%' },
-    { name: 'WebIDE', status: 'warning', uptime: '98.5%' },
-    { name: '文件存储', status: 'healthy', uptime: '99.9%' }
+    { name: '数据库', status: 'healthy', uptime: '99.9%', responseTime: '12ms' },
+    { name: 'API服务', status: 'healthy', uptime: '99.8%', responseTime: '45ms' },
+    { name: '文件存储', status: 'healthy', uptime: '99.7%', responseTime: '23ms' },
+    { name: '缓存服务', status: 'warning', uptime: '98.5%', responseTime: '67ms' }
+  ];
+
+  // 最近活动
+  const recentActivities = [
+    { id: 1, title: '新用户注册', time: '5分钟前', type: 'user', icon: '👤' },
+    { id: 2, title: '系统备份完成', time: '1小时前', type: 'system', icon: '💾' },
+    { id: 3, title: '课程内容更新', time: '2小时前', type: 'content', icon: '📚' },
+    { id: 4, title: '系统更新部署', time: '3小时前', type: 'system', icon: '🔄' },
+    { id: 5, title: '用户反馈处理完成', time: '4小时前', type: 'support', icon: '💬' }
   ];
 
   return (
     <MainLayout>
       <div className="page-container">
         {/* 欢迎区域 */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            系统管理中心
-          </h1>
-          <p className="text-gray-600">
-            管理用户、监控系统、配置平台，确保平台稳定运行
-          </p>
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-800 via-gray-800 to-slate-900 rounded-2xl mb-8 shadow-2xl">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-48 translate-x-48"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/3 rounded-full translate-y-32 -translate-x-32"></div>
+          <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-blue-500/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+
+          <div className="relative px-8 py-12">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <span className="px-3 py-1 bg-blue-500/20 text-blue-200 text-sm font-medium rounded-full">系统管理员</span>
+                </div>
+                <h1 className="text-4xl font-bold text-white mb-3">
+                  欢迎回来，{user?.displayName}！
+                </h1>
+                <p className="text-gray-300 text-lg mb-6 max-w-2xl">
+                  全面掌控平台运营，监控系统状态，管理用户权限，确保平台安全稳定运行
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <div>
+                      <div className="text-white font-medium">系统状态</div>
+                      <div className="text-green-300 text-sm">运行正常</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-white font-medium">健康度</div>
+                      <div className="text-blue-300 text-sm">{stats.systemHealth}%</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-white font-medium">用户总数</div>
+                      <div className="text-purple-300 text-sm">{stats.totalUsers} 人</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="w-40 h-40 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/10">
+                  <span className="text-7xl">🛡️</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="card">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <span className="text-blue-600 font-semibold">👥</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {/* 用户总数卡片 */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-blue-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">👥</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalUsers}</div>
+                  <div className="text-sm text-gray-500">总用户</div>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">总用户数</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <span className="text-green-600 font-semibold">🎓</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">学生数量</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                <span className="text-purple-600 font-semibold">👨‍🏫</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">教师数量</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalTeachers}</p>
+              <h3 className="text-gray-700 font-medium mb-2">平台用户</h3>
+              <div className="flex items-center text-sm text-blue-600">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span>今日活跃 {stats.activeUsers} 人</span>
               </div>
             </div>
           </div>
 
-          <div className="card">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                <span className="text-orange-600 font-semibold">⚡</span>
+          {/* 学生数量卡片 */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">🎓</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalStudents}</div>
+                  <div className="text-sm text-gray-500">名学生</div>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">系统健康度</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.systemHealth}%</p>
+              <h3 className="text-gray-700 font-medium mb-2">学生用户</h3>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${(stats.totalStudents / stats.totalUsers) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 教师数量卡片 */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-purple-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/10 to-purple-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">👨‍🏫</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalTeachers}</div>
+                  <div className="text-sm text-gray-500">名教师</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">教学团队</h3>
+              <div className="flex items-center text-sm text-purple-600">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span>专业师资</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 系统健康度卡片 */}
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/10 to-orange-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">⚡</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.systemHealth}%</div>
+                  <div className="text-sm text-gray-500">健康度</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">系统状态</h3>
+              <div className="flex items-center text-sm text-orange-600">
+                <svg className="w-4 h-4 mr-1 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span>运行稳定</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* 管理功能 */}
-          <div className="card">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">系统管理</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button
-                onClick={() => navigate('/admin/users')}
-                className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors text-left"
-              >
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
-                  <span className="text-white text-lg">👥</span>
-                </div>
-                <h4 className="font-medium text-gray-900 mb-1">用户管理</h4>
-                <p className="text-sm text-gray-600">管理学生和教师账户</p>
-              </button>
-
-              <button className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors text-left">
-                <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mb-3">
-                  <span className="text-white text-lg">📚</span>
-                </div>
-                <h4 className="font-medium text-gray-900 mb-1">课程管理</h4>
-                <p className="text-sm text-gray-600">管理课程内容和实验</p>
-              </button>
-
-              <button
-                onClick={() => navigate('/admin/settings')}
-                className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors text-left"
-              >
-                <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
-                  <span className="text-white text-lg">⚙️</span>
-                </div>
-                <h4 className="font-medium text-gray-900 mb-1">系统配置</h4>
-                <p className="text-sm text-gray-600">系统参数和功能配置</p>
-              </button>
-
-              <button
-                onClick={() => navigate('/admin/reports')}
-                className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors text-left"
-              >
-                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mb-3">
-                  <span className="text-white text-lg">📊</span>
-                </div>
-                <h4 className="font-medium text-gray-900 mb-1">数据报表</h4>
-                <p className="text-sm text-gray-600">生成和导出统计报表</p>
-              </button>
+        {/* 主要内容区域 - 三列布局 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* 快捷管理操作 */}
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">快捷操作</h3>
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {quickActions.map((action, index) => (
+                <button
+                  key={index}
+                  onClick={action.action}
+                  className="group w-full p-4 rounded-xl border border-gray-200 hover:border-transparent hover:shadow-lg hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-300 text-left"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                      <span className="text-white text-xl">{action.icon}</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{action.title}</h4>
+                      <p className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors">{action.description}</p>
+                    </div>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
           {/* 系统状态 */}
-          <div className="card">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">系统状态</h3>
-            <div className="space-y-4">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">系统状态</h3>
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-3">
               {systemStatus.map((service, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      service.status === 'healthy' ? 'bg-green-500' : 
-                      service.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}></div>
-                    <span className="text-sm font-medium text-gray-900">{service.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-sm text-gray-600">运行时间: {service.uptime}</span>
+                <div key={index} className="group relative">
+                  <div className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${
+                        service.status === 'healthy' ? 'bg-gradient-to-br from-green-500 to-green-600' :
+                        service.status === 'warning' ? 'bg-gradient-to-br from-yellow-500 to-yellow-600' :
+                        'bg-gradient-to-br from-red-500 to-red-600'
+                      }`}>
+                        <div className={`w-3 h-3 rounded-full bg-white ${
+                          service.status === 'healthy' ? 'animate-pulse' : ''
+                        }`}></div>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{service.name}</h4>
+                        <span className="text-xs text-gray-500">{service.responseTime}</span>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className={`text-sm ${
+                          service.status === 'healthy' ? 'text-green-600' :
+                          service.status === 'warning' ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {service.status === 'healthy' ? '运行正常' : service.status === 'warning' ? '性能警告' : '服务异常'}
+                        </span>
+                        <span className="text-xs text-gray-500">运行时间 {service.uptime}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="mt-6 pt-4 border-t border-gray-100">
+              <button className="w-full text-center text-sm text-green-600 hover:text-green-800 font-medium py-2 hover:bg-green-50 rounded-lg transition-all duration-300">
+                查看详细监控
+              </button>
+            </div>
+          </div>
+
+          {/* 最近活动 */}
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">最近活动</h3>
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {recentActivities.map((activity, index) => (
+                <div key={activity.id} className="group relative">
+                  <div className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-purple-50 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${
+                        activity.type === 'user' ? 'bg-gradient-to-br from-blue-500 to-blue-600' :
+                        activity.type === 'system' ? 'bg-gradient-to-br from-gray-500 to-gray-600' :
+                        activity.type === 'content' ? 'bg-gradient-to-br from-green-500 to-green-600' :
+                        'bg-gradient-to-br from-purple-500 to-purple-600'
+                      }`}>
+                        <span className="text-white text-sm">{activity.icon}</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors">{activity.title}</p>
+                      <p className="text-sm text-gray-500 group-hover:text-purple-600 transition-colors">{activity.time}</p>
+                    </div>
+                  </div>
+                  {index < recentActivities.length - 1 && (
+                    <div className="absolute left-8 top-12 w-0.5 h-4 bg-gradient-to-b from-gray-200 to-transparent"></div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 pt-4 border-t border-gray-100">
+              <button className="w-full text-center text-sm text-purple-600 hover:text-purple-800 font-medium py-2 hover:bg-purple-50 rounded-lg transition-all duration-300">
+                查看全部活动
+              </button>
             </div>
           </div>
         </div>

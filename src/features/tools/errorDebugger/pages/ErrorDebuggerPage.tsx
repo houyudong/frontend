@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 错误类型接口
 interface ErrorPattern {

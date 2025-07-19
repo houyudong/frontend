@@ -12,6 +12,9 @@ export interface User {
   role: UserRole;
   avatar?: string;
   displayName?: string;
+  phone?: string;
+  department?: string;
+  bio?: string;
 }
 
 // 认证上下文类型

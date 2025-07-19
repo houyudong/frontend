@@ -39,6 +39,12 @@ export const routes: RouteConfig[] = [
         name: '课程学习',
         roles: ['student'],
         icon: '📚'
+      },
+      {
+        path: '/student/profile',
+        name: '个人中心',
+        roles: ['student'],
+        icon: '👤'
       }
     ]
   },
@@ -62,9 +68,29 @@ export const routes: RouteConfig[] = [
       },
       {
         path: '/teacher/management',
-        name: '班级管理',
+        name: '教学管理',
         roles: ['teacher'],
-        icon: '👥'
+        icon: '👥',
+        children: [
+          {
+            path: '/teacher/management/classes',
+            name: '班级管理',
+            roles: ['teacher'],
+            icon: '🏫'
+          },
+          {
+            path: '/teacher/management/students',
+            name: '学生管理',
+            roles: ['teacher'],
+            icon: '👨‍🎓'
+          }
+        ]
+      },
+      {
+        path: '/teacher/profile',
+        name: '个人中心',
+        roles: ['teacher'],
+        icon: '👤'
       }
     ]
   },
@@ -91,8 +117,26 @@ export const routes: RouteConfig[] = [
         name: '系统管理',
         roles: ['admin'],
         icon: '⚙️'
+      },
+      {
+        path: '/admin/profile',
+        name: '个人中心',
+        roles: ['admin'],
+        icon: '👤'
       }
     ]
+  }
+];
+
+/**
+ * 通用路由配置 - 所有角色都可以访问
+ */
+export const commonRoutes: RouteConfig[] = [
+  {
+    path: '/user-center',
+    name: '用户中心',
+    roles: ['admin', 'teacher', 'student'],
+    icon: '👤'
   }
 ];
 

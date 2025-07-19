@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExperimentApi, ExperimentTemplate, UserExperiment } from '../../../../shared/api/experimentApi';
+import { ExperimentApi, ExperimentTemplate, UserExperiment } from '../../../../api/experimentApi';
 
 /**
  * 实验API测试页面

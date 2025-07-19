@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 课程模块和课时接口
 interface Lesson {
@@ -80,10 +80,16 @@ const mockCourseDetail: Course = {
 };
 
 // 模块手风琴组件
-const ModuleAccordion: React.FC<{ module: Module; index: number }> = ({ module, index }) => {
+const ModuleAccordion: React.FC<{ module: Module; index: number; courseId: string }> = ({ module, index, courseId }) => {
   const [isOpen, setIsOpen] = useState(index === 0);
+  const navigate = useNavigate();
   const completedLessons = module.lessons.filter(lesson => lesson.completed).length;
   const totalLessons = module.lessons.length;
+
+  // 点击课时进入学习页面
+  const handleLessonClick = (lessonId: string) => {
+    navigate(`/student/courses/${courseId}/study/${lessonId}`);
+  };
 
   return (
     <div className="border border-gray-200 rounded-lg mb-4">
@@ -122,9 +128,10 @@ const ModuleAccordion: React.FC<{ module: Module; index: number }> = ({ module, 
                 </div>
               </div>
               <button
-                className={`text-sm px-3 py-1 rounded ${
-                  lesson.completed 
-                    ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                onClick={() => handleLessonClick(lesson.id)}
+                className={`text-sm px-3 py-1 rounded transition-colors ${
+                  lesson.completed
+                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
                     : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                 }`}
               >
@@ -181,8 +188,29 @@ const ResourceCard: React.FC<{ resource: Resource }> = ({ resource }) => {
  */
 const CourseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // 继续学习功能
+  const handleContinueStudy = () => {
+    if (!course) return;
+
+    // 找到第一个未完成的课时
+    for (const module of course.modules) {
+      for (const lesson of module.lessons) {
+        if (!lesson.completed) {
+          navigate(`/student/courses/${id}/study/${lesson.id}`);
+          return;
+        }
+      }
+    }
+
+    // 如果所有课时都完成了，跳转到第一个课时
+    if (course.modules.length > 0 && course.modules[0].lessons.length > 0) {
+      navigate(`/student/courses/${id}/study/${course.modules[0].lessons[0].id}`);
+    }
+  };
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -240,7 +268,7 @@ const CourseDetailPage: React.FC = () => {
         </div>
 
         {/* 课程头部信息 */}
-        <div className="card mb-8">
+        <div className="card mb-6">
           <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{course.title}</h1>
@@ -266,7 +294,10 @@ const CourseDetailPage: React.FC = () => {
                     style={{ width: `${course.progress}%` }}
                   />
                 </div>
-                <button className="w-full btn-primary">
+                <button
+                  onClick={handleContinueStudy}
+                  className="w-full btn-primary"
+                >
                   {course.progress > 0 ? '继续学习' : '开始学习'}
                 </button>
               </div>
@@ -280,7 +311,7 @@ const CourseDetailPage: React.FC = () => {
             <h2 className="text-xl font-bold text-gray-900 mb-6">课程内容</h2>
             <div className="space-y-4">
               {course.modules.map((module, index) => (
-                <ModuleAccordion key={module.id} module={module} index={index} />
+                <ModuleAccordion key={module.id} module={module} index={index} courseId={id || ''} />
               ))}
             </div>
           </div>

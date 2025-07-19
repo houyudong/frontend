@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 import STMIDEWrapper from '../../../stmIde/STMIDEWrapper';
 import { KnowledgePointSection } from '../components/KnowledgePointCard';
 import { EnhancedExperimentDetail } from '../types/experimentTypes';
 import { realExperiments } from '../data/realExperiments';
-import { experimentApi } from '../../../../shared/api/experimentApi';
+import { experimentApi } from '../../../../api/experimentApi';
 
 // 获取实验数据
 const getExperimentData = (experimentId: string): EnhancedExperimentDetail | null => {

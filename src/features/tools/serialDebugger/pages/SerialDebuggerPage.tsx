@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 
 // 串口消息接口
 interface SerialMessage {

@@ -1,121 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import MainLayout from '../../../../shared/ui/layout/MainLayout';
+import MainLayout from '../../../../pages/layout/MainLayout';
 import { experimentsList } from '../data/realExperiments';
-import { ExperimentListItem } from '../types/experimentTypes';
-import { experimentApi, ExperimentListItem as ApiExperimentListItem } from '../../../../shared/api/experimentApi';
+import { ExtendedExperimentApi, ExperimentListItem as ApiExperimentListItem } from '../../../../api/experimentApi';
 
-// 实验接口定义
-interface Experiment {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  timeEstimate: number; // 分钟
-  completed: boolean;
-  progress: number; // 0-100
-  tags: string[];
-  isNew?: boolean;
-  isPopular?: boolean;
-}
-
-// 模拟实验数据
-const mockExperiments: Experiment[] = [
-  {
-    id: 'led-blink',
-    title: 'LED闪烁实验',
-    description: '学习如何使用STM32的GPIO控制LED灯的闪烁，掌握基本的GPIO配置和操作。',
-    type: 'GPIO实验',
-    difficulty: 'beginner',
-    timeEstimate: 30,
-    completed: true,
-    progress: 100,
-    tags: ['GPIO', 'LED', '基础实验'],
-    isNew: false,
-    isPopular: true
-  },
-  {
-    id: 'uart-communication',
-    title: '串口通信实验',
-    description: '通过串口与电脑进行通信，学习串口配置和数据传输。',
-    type: '串口实验',
-    difficulty: 'intermediate',
-    timeEstimate: 45,
-    completed: false,
-    progress: 60,
-    tags: ['UART', '通信', '串口'],
-    isNew: false,
-    isPopular: true
-  },
-  {
-    id: 'timer-interrupt',
-    title: '定时器中断实验',
-    description: '使用定时器产生精确的时间间隔，实现定时任务。',
-    type: '定时中断',
-    difficulty: 'intermediate',
-    timeEstimate: 60,
-    completed: false,
-    progress: 0,
-    tags: ['定时器', '中断', 'TIM'],
-    isNew: true,
-    isPopular: false
-  },
-  {
-    id: 'adc-sampling',
-    title: 'ADC采样实验',
-    description: '使用ADC采集模拟信号，将模拟量转换为数字量。',
-    type: 'ADC实验',
-    difficulty: 'intermediate',
-    timeEstimate: 90,
-    completed: false,
-    progress: 0,
-    tags: ['ADC', '模拟量', '采样'],
-    isNew: false,
-    isPopular: false
-  },
-  {
-    id: 'dac-output',
-    title: 'DAC输出实验',
-    description: '使用DAC输出模拟信号，生成不同波形。',
-    type: 'DAC实验',
-    difficulty: 'advanced',
-    timeEstimate: 120,
-    completed: false,
-    progress: 0,
-    tags: ['DAC', '模拟量', '波形生成'],
-    isNew: false,
-    isPopular: false
-  },
-  {
-    id: 'dma-transfer',
-    title: 'DMA传输实验',
-    description: '使用DMA进行数据传输，提高传输效率。',
-    type: 'DMA实验',
-    difficulty: 'advanced',
-    timeEstimate: 150,
-    completed: false,
-    progress: 0,
-    tags: ['DMA', '数据传输', '效率优化'],
-    isNew: false,
-    isPopular: false
-  },
-  {
-    id: 'comprehensive-application',
-    title: '综合应用实验',
-    description: '结合多个外设，实现一个完整的应用场景。',
-    type: '综合应用',
-    difficulty: 'advanced',
-    timeEstimate: 180,
-    completed: false,
-    progress: 0,
-    tags: ['综合应用', '项目实战', '系统集成'],
-    isNew: true,
-    isPopular: false
-  }
-];
-
-// 实验卡片组件
+// 实验卡片组件 - 优化版本
 const ExperimentCard: React.FC<{ experiment: ApiExperimentListItem }> = ({ experiment }) => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -135,18 +24,80 @@ const ExperimentCard: React.FC<{ experiment: ApiExperimentListItem }> = ({ exper
     }
   };
 
-  const getTypeIcon = (type: string | undefined) => {
-    if (!type) return '🔧';
-    if (type.includes('GPIO') || type.includes('gpio')) return '💡';
-    if (type.includes('串口') || type.includes('uart')) return '📡';
-    if (type.includes('定时') || type.includes('timer')) return '⏰';
-    if (type.includes('ADC') || type.includes('adc')) return '📊';
-    if (type.includes('DAC') || type.includes('dac')) return '🎵';
-    if (type.includes('DMA') || type.includes('dma')) return '⚡';
-    if (type.includes('综合') || type.includes('sensor')) return '🎯';
-    if (type.includes('LCD') || type.includes('lcd')) return '📺';
-    if (type.includes('interrupt')) return '⚡';
-    return '🔧';
+  const getTypeIcon = (type: string | undefined, experimentName?: string) => {
+    // 根据实验名称优先匹配图标
+    if (experimentName) {
+      if (experimentName.includes('LED') || experimentName.includes('led')) {
+        return <div className="text-3xl">💡</div>;
+      }
+      if (experimentName.includes('按键') || experimentName.includes('key')) {
+        return <div className="text-3xl">🔘</div>;
+      }
+      if (experimentName.includes('环境监测') || experimentName.includes('smarteco')) {
+        return <div className="text-3xl">🌡️</div>;
+      }
+      if (experimentName.includes('泊车') || experimentName.includes('autopark')) {
+        return <div className="text-3xl">🚗</div>;
+      }
+      if (experimentName.includes('健身手环') || experimentName.includes('fitband')) {
+        return <div className="text-3xl">⌚</div>;
+      }
+      if (experimentName.includes('光学追踪') || experimentName.includes('optitracer')) {
+        return <div className="text-3xl">👁️</div>;
+      }
+    }
+
+    if (!type) {
+      return <div className="text-3xl">⚡</div>;
+    }
+
+    // GPIO相关实验
+    if (type.includes('GPIO') || type.includes('gpio')) {
+      return <div className="text-3xl">⚡</div>;
+    }
+
+    // 串口通信实验
+    if (type.includes('UART') || type.includes('uart') || type.includes('串口')) {
+      return <div className="text-3xl">📡</div>;
+    }
+
+    // 定时器实验
+    if (type.includes('定时器') || type.includes('timer')) {
+      return <div className="text-3xl">⏰</div>;
+    }
+
+    // PWM实验
+    if (type.includes('PWM') || type.includes('pwm')) {
+      return <div className="text-3xl">📈</div>;
+    }
+
+    // 中断实验
+    if (type.includes('中断') || type.includes('interrupt')) {
+      return <div className="text-3xl">⚡</div>;
+    }
+
+    // ADC实验
+    if (type.includes('ADC') || type.includes('adc')) {
+      return <div className="text-3xl">📊</div>;
+    }
+
+    // DAC实验
+    if (type.includes('DAC') || type.includes('dac')) {
+      return <div className="text-3xl">🎵</div>;
+    }
+
+    // LCD显示实验
+    if (type.includes('LCD') || type.includes('lcd') || type.includes('显示')) {
+      return <div className="text-3xl">🖥️</div>;
+    }
+
+    // 综合应用实验
+    if (type.includes('综合应用') || type.includes('智能')) {
+      return <div className="text-3xl">🏠</div>;
+    }
+
+    // 默认图标
+    return <div className="text-3xl">🔬</div>;
   };
 
   const formatTime = (minutes: number) => {
@@ -159,69 +110,125 @@ const ExperimentCard: React.FC<{ experiment: ApiExperimentListItem }> = ({ exper
   return (
     <Link
       to={`/student/experiments/${experiment.id}`}
-      className="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow overflow-hidden"
+      className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 overflow-hidden flex flex-col"
     >
-      {/* 实验图标和状态 */}
-      <div className="relative h-32 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-        <span className="text-4xl">{getTypeIcon(experiment.category || experiment.name)}</span>
-        
-        {/* 状态标识 */}
-        <div className="absolute top-2 left-2 flex space-x-1">
+      {/* 实验图标和状态 - 自适应高度 */}
+      <div className="relative bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-6 flex items-center justify-center min-h-[120px]">
+        <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+          {getTypeIcon(experiment.category, experiment.name)}
+        </div>
+
+        {/* 状态标识 - 只在对应item上显示 */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
           {experiment.isNew && (
-            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">新</span>
+            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-sm">
+              新
+            </span>
           )}
           {experiment.isPopular && (
-            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">热门</span>
+            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-sm">
+              热门
+            </span>
           )}
         </div>
 
         {/* 完成状态 */}
         {experiment.completed && (
-          <div className="absolute top-2 right-2">
-            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ 已完成</span>
+          <div className="absolute top-3 right-3">
+            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-sm">
+              ✓ 已完成
+            </span>
           </div>
         )}
 
-        {/* 进度条 */}
-        {(experiment.progress || 0) > 0 && (experiment.progress || 0) < 100 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gray-200 h-1">
-            <div
-              className="bg-yellow-400 h-1 transition-all duration-300"
-              style={{ width: `${experiment.progress || 0}%` }}
-            />
-          </div>
-        )}
+        {/* 头部进度条 */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white/20 h-1">
+          <div
+            className="bg-white h-1 transition-all duration-300"
+            style={{ width: `${experiment.progress || 0}%` }}
+          />
+        </div>
       </div>
 
-      {/* 实验信息 */}
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(experiment.difficulty)}`}>
+      {/* 实验信息 - 自适应内容 */}
+      <div className="flex-1 p-5 flex flex-col">
+        {/* 头部信息 */}
+        <div className="flex items-center justify-between mb-3">
+          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getDifficultyColor(experiment.difficulty)}`}>
             {getDifficultyText(experiment.difficulty)}
           </span>
-          <span className="text-xs text-gray-500">{experiment.category || '实验'}</span>
+          <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+            {experiment.category || '实验'}
+          </span>
         </div>
 
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{experiment.name}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{experiment.description}</p>
+        {/* 标题和描述 */}
+        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+          {experiment.name}
+        </h3>
+        <p className="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed flex-1">
+          {experiment.description}
+        </p>
 
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>⏱️ {formatTime(experiment.estimatedTime)}</span>
-          {(experiment.progress || 0) > 0 && (experiment.progress || 0) < 100 && (
-            <span className="text-blue-600 font-medium">{experiment.progress}% 完成</span>
+        {/* 底部信息区域 */}
+        <div className="mt-auto space-y-3">
+          {/* 基本信息 */}
+          <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{formatTime(experiment.estimatedTime)}</span>
+            </div>
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>{getDifficultyText(experiment.difficulty)}</span>
+            </div>
+          </div>
+
+          {/* 标签 */}
+          {(experiment.tags && experiment.tags.length > 0) && (
+            <div className="flex flex-wrap gap-1.5">
+              {experiment.tags.slice(0, 3).map((tag, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-blue-50 text-blue-700 border border-blue-200 font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+              {experiment.tags.length > 3 && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-gray-100 text-gray-600 border border-gray-200">
+                  +{experiment.tags.length - 3}
+                </span>
+              )}
+            </div>
           )}
-        </div>
 
-        {/* 标签 */}
-        <div className="mt-3 flex flex-wrap gap-1">
-          {(experiment.tags || []).slice(0, 3).map((tag, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700"
-            >
-              {tag}
-            </span>
-          ))}
+          {/* 实验进度 */}
+          <div className="pt-2 border-t border-gray-100">
+            <div className="flex justify-between items-center text-sm mb-2">
+              <span className="text-gray-600 font-medium">学习进度</span>
+              <span className={`font-semibold ${
+                (experiment.progress || 0) === 100 ? 'text-green-600' :
+                (experiment.progress || 0) > 0 ? 'text-blue-600' :
+                'text-gray-500'
+              }`}>
+                {(experiment.progress || 0) === 100 ? '已完成' : `${experiment.progress || 0}%`}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full transition-all duration-500 ${
+                  (experiment.progress || 0) === 100 ? 'bg-green-500' :
+                  (experiment.progress || 0) > 0 ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+                style={{ width: `${Math.max(experiment.progress || 0, 2)}%` }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </Link>
@@ -230,7 +237,7 @@ const ExperimentCard: React.FC<{ experiment: ApiExperimentListItem }> = ({ exper
 
 /**
  * ExperimentsPage - 学生实验页面
- * 
+ *
  * 显示学生可进行的实验列表，支持搜索和筛选
  * 参考ref目录实现，集成STMIDE功能
  */
@@ -244,13 +251,16 @@ const ExperimentsPage: React.FC = () => {
   // 加载真实实验数据
   useEffect(() => {
     const loadExperiments = async () => {
+      setLoading(true);
       try {
-        const data = await experimentApi.getExperimentsList();
+        const data = await ExtendedExperimentApi.getExperimentsList();
         setExperiments(data);
+        console.log('实验数据加载成功:', data.length, '个实验');
       } catch (error) {
-        console.error('Failed to load experiments:', error);
+        console.error('加载实验数据失败:', error);
         // 如果API失败，使用本地数据作为fallback
         setExperiments(experimentsList as any);
+        console.log('使用本地数据作为后备方案');
       } finally {
         setLoading(false);
       }
@@ -282,85 +292,327 @@ const ExperimentsPage: React.FC = () => {
 
   return (
     <MainLayout>
-        {/* 页面标题 */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">实验中心</h1>
-          <p className="text-gray-600">通过动手实验掌握STM32嵌入式开发的核心技能</p>
+      <div className="page-container">
+        {/* 页面标题 - 重新设计 */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-800 rounded-2xl mb-8 shadow-xl">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-48 translate-x-48"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+
+          <div className="relative px-8 py-12">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-3">实验中心</h1>
+                <p className="text-purple-100 text-lg mb-6 max-w-2xl">
+                  从GPIO基础到综合应用，循序渐进掌握STM32嵌入式开发技能
+                </p>
+                {/* 开发环境下显示数据加载状态 */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="text-purple-200 text-sm mb-4 bg-white/10 px-3 py-1 rounded-full inline-block">
+                    📊 数据状态: {loading ? '加载中...' : `已加载 ${experiments.length} 个实验`}
+                  </div>
+                )}
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm">实验环境：就绪</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-white/90">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <span className="text-sm">已完成 {stats.completed} 个实验</span>
+                  </div>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  <span className="text-6xl">🧪</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 实验统计 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="card text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-            <div className="text-sm text-gray-600">总实验数</div>
+        {/* 实验统计 - 重新设计 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-blue-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">📊</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+                  <div className="text-sm text-gray-500">个实验</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">总实验数</h3>
+              <div className="flex items-center text-sm text-gray-600">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>基础到应用</span>
+              </div>
+            </div>
           </div>
-          <div className="card text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-            <div className="text-sm text-gray-600">已完成</div>
+
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">✅</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.completed}</div>
+                  <div className="text-sm text-gray-500">已完成</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">完成实验</h3>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
+                ></div>
+              </div>
+            </div>
           </div>
-          <div className="card text-center">
-            <div className="text-2xl font-bold text-yellow-600">{stats.inProgress}</div>
-            <div className="text-sm text-gray-600">进行中</div>
+
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-yellow-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">⏳</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.inProgress}</div>
+                  <div className="text-sm text-gray-500">进行中</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">进行中</h3>
+              <div className="flex items-center text-sm text-gray-600">
+                <svg className="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span>继续努力！</span>
+              </div>
+            </div>
           </div>
-          <div className="card text-center">
-            <div className="text-2xl font-bold text-gray-600">{stats.notStarted}</div>
-            <div className="text-sm text-gray-600">未开始</div>
+
+          <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-purple-200 hover:-translate-y-1">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/10 to-purple-600/20 rounded-full -translate-y-10 translate-x-10"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-xl">📝</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">{stats.notStarted}</div>
+                  <div className="text-sm text-gray-500">待开始</div>
+                </div>
+              </div>
+              <h3 className="text-gray-700 font-medium mb-2">未开始</h3>
+              <div className="flex items-center text-sm text-gray-600">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>开始探索</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* 搜索和筛选 */}
-        <div className="card mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                搜索实验
-              </label>
-              <input
-                type="text"
-                className="input-primary"
-                placeholder="输入实验名称、描述或标签..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        {/* 实验路径导航 */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-gray-900">学习路径</h3>
+            <div className="text-sm text-gray-500">循序渐进，由浅入深</div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <div className="flex items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+              基础入门 (GPIO/LED)
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                实验类型
-              </label>
-              <select
-                className="input-primary"
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                <option value="all">全部类型</option>
-                {experimentTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
+            <div className="flex items-center bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+              中级进阶 (定时器/串口)
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                难度等级
+            <div className="flex items-center bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+              高级应用 (ADC/DAC)
+            </div>
+            <div className="flex items-center bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+              综合项目 (智能系统)
+            </div>
+          </div>
+        </div>
+
+        {/* 搜索和筛选 - 重新设计 */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">筛选实验</h3>
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="group">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                🔍 搜索实验
               </label>
-              <select
-                className="input-primary"
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-              >
-                <option value="all">全部等级</option>
-                <option value="beginner">初级</option>
-                <option value="intermediate">中级</option>
-                <option value="advanced">高级</option>
-              </select>
+              <div className="relative">
+                <input
+                  type="text"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300"
+                  placeholder="输入实验名称、描述或标签..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="group">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                📂 实验类型
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300 appearance-none bg-white"
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                >
+                  <option value="all">全部类型</option>
+                  {experimentTypes.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="group">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                ⭐ 难度等级
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300 appearance-none bg-white"
+                  value={selectedDifficulty}
+                  onChange={(e) => setSelectedDifficulty(e.target.value)}
+                >
+                  <option value="all">全部等级</option>
+                  <option value="beginner">初级</option>
+                  <option value="intermediate">中级</option>
+                  <option value="advanced">高级</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 筛选结果统计 */}
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <span>找到 {filteredExperiments.length} 个实验</span>
+              {(searchTerm || selectedType !== 'all' || selectedDifficulty !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedType('all');
+                    setSelectedDifficulty('all');
+                  }}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  清除筛选
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* 实验列表 */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="loading-spinner h-8 w-8 mr-3"></div>
-            <span className="text-gray-600">加载实验中...</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 骨架屏 - 显示6个占位卡片 */}
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden animate-pulse">
+                {/* 头部骨架 */}
+                <div className="h-32 bg-gradient-to-br from-gray-300 to-gray-400 relative">
+                  <div className="absolute top-3 left-3 space-y-1">
+                    <div className="h-5 w-8 bg-gray-400 rounded-full"></div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-14 h-14 bg-gray-400 rounded-full"></div>
+                  </div>
+                </div>
+
+                {/* 内容骨架 */}
+                <div className="p-5 space-y-4">
+                  {/* 头部信息 */}
+                  <div className="flex items-center justify-between">
+                    <div className="h-6 bg-gray-300 rounded-full w-16"></div>
+                    <div className="h-5 bg-gray-300 rounded-full w-12"></div>
+                  </div>
+
+                  {/* 标题 */}
+                  <div className="space-y-2">
+                    <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+
+                  {/* 描述 */}
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-300 rounded w-full"></div>
+                    <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+                    <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                  </div>
+
+                  {/* 底部信息 */}
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <div className="h-4 bg-gray-300 rounded w-20"></div>
+                      <div className="h-4 bg-gray-300 rounded w-16"></div>
+                    </div>
+
+                    {/* 标签 */}
+                    <div className="flex gap-2">
+                      <div className="h-6 bg-gray-300 rounded w-16"></div>
+                      <div className="h-6 bg-gray-300 rounded w-12"></div>
+                      <div className="h-6 bg-gray-300 rounded w-8"></div>
+                    </div>
+
+                    {/* 进度条 */}
+                    <div className="pt-2 border-t border-gray-200">
+                      <div className="flex justify-between mb-2">
+                        <div className="h-4 bg-gray-300 rounded w-16"></div>
+                        <div className="h-4 bg-gray-300 rounded w-12"></div>
+                      </div>
+                      <div className="h-2.5 bg-gray-300 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredExperiments.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -385,6 +637,7 @@ const ExperimentsPage: React.FC = () => {
             </button>
           </div>
         )}
+      </div>
     </MainLayout>
   );
 };
