@@ -35,6 +35,13 @@ const AdminDashboard: React.FC = () => {
       action: () => navigate('/admin/users')
     },
     {
+      title: '数据分析',
+      description: '学习行为分析与实时监控',
+      icon: '📈',
+      color: 'from-purple-500 to-purple-600',
+      action: () => navigate('/admin/analytics')
+    },
+    {
       title: '系统设置',
       description: '配置系统参数',
       icon: '⚙️',
@@ -47,6 +54,34 @@ const AdminDashboard: React.FC = () => {
       icon: '📊',
       color: 'from-green-500 to-green-600',
       action: () => navigate('/admin/reports')
+    },
+    {
+      title: '通知管理',
+      description: '发送系统通知和公告',
+      icon: '📢',
+      color: 'from-orange-500 to-red-600',
+      action: () => {
+        try {
+          navigate('/admin/notifications');
+        } catch (error) {
+          console.warn('Navigation warning ignored:', error);
+          window.location.href = '/admin/notifications';
+        }
+      }
+    },
+    {
+      title: '数据导出',
+      description: '导出系统数据和分析',
+      icon: '📤',
+      color: 'from-indigo-500 to-purple-600',
+      action: () => {
+        try {
+          navigate('/admin/export');
+        } catch (error) {
+          console.warn('Navigation warning ignored:', error);
+          window.location.href = '/admin/export';
+        }
+      }
     }
   ];
 
@@ -356,6 +391,139 @@ const AdminDashboard: React.FC = () => {
               <button className="w-full text-center text-sm text-purple-600 hover:text-purple-800 font-medium py-2 hover:bg-purple-50 rounded-lg transition-all duration-300">
                 查看全部活动
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 数据分析概览 */}
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">数据分析概览</h2>
+              <p className="text-gray-600 mt-1">实时监控系统运行状态和用户学习行为</p>
+            </div>
+            <button
+              onClick={() => navigate('/admin/analytics')}
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-xl"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span>查看详细分析</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* 在线用户数 */}
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+              <div className="text-3xl font-bold mb-2">{stats.activeUsers}</div>
+              <div className="text-blue-100 text-sm">当前在线用户</div>
+            </div>
+
+            {/* 挂科风险学生 */}
+            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <div className="text-xs bg-white/20 px-2 py-1 rounded-full">预警</div>
+              </div>
+              <div className="text-3xl font-bold mb-2">8</div>
+              <div className="text-red-100 text-sm">高风险学生</div>
+            </div>
+
+            {/* 热门课程 */}
+            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div className="text-xs bg-white/20 px-2 py-1 rounded-full">TOP1</div>
+              </div>
+              <div className="text-lg font-bold mb-2">STM32嵌入式开发</div>
+              <div className="text-green-100 text-sm">45人在线学习</div>
+            </div>
+
+            {/* 作业提交率 */}
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="text-xs bg-white/20 px-2 py-1 rounded-full">今日</div>
+              </div>
+              <div className="text-3xl font-bold mb-2">78.5%</div>
+              <div className="text-purple-100 text-sm">作业提交率</div>
+            </div>
+          </div>
+
+          {/* 实时数据图表预览 */}
+          <div className="mt-6 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">实时活动监控</h3>
+              <div className="flex items-center space-x-2 text-sm text-green-600">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>实时更新</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 在线用户趋势 */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">在线用户趋势 (最近10分钟)</h4>
+                <div className="flex items-end space-x-2 h-24">
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const height = Math.random() * 80 + 20;
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center">
+                        <div
+                          className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t transition-all duration-300"
+                          style={{ height: `${height}%` }}
+                        ></div>
+                        <div className="text-xs text-gray-500 mt-1">{i + 1}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 课程访问热度 */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">课程访问热度</h4>
+                <div className="space-y-3">
+                  {[
+                    { name: 'STM32嵌入式开发', value: 85, color: 'bg-blue-500' },
+                    { name: 'ARM架构编程', value: 72, color: 'bg-green-500' },
+                    { name: '数字电路设计', value: 58, color: 'bg-purple-500' },
+                    { name: 'C语言程序设计', value: 45, color: 'bg-orange-500' }
+                  ].map((course, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <div className="w-20 text-xs text-gray-600 truncate">{course.name}</div>
+                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`${course.color} h-2 rounded-full transition-all duration-500`}
+                          style={{ width: `${course.value}%` }}
+                        ></div>
+                      </div>
+                      <div className="w-8 text-xs text-gray-500 text-right">{course.value}%</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

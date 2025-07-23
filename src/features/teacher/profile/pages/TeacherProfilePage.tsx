@@ -148,7 +148,7 @@ const TeacherProfilePage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* 班级管理 */}
               <button
-                onClick={() => navigate('/teacher/classes')}
+                onClick={() => navigate('/teacher/management/classes')}
                 className="flex flex-col items-center p-6 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
@@ -190,7 +190,7 @@ const TeacherProfilePage: React.FC = () => {
 
               {/* 成绩管理 */}
               <button
-                onClick={() => navigate('/teacher/grades')}
+                onClick={() => navigate('/teacher/analytics/students')}
                 className="flex flex-col items-center p-6 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-orange-200 transition-colors">
@@ -216,7 +216,7 @@ const TeacherProfilePage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 学生进度分析 */}
               <button
-                onClick={() => navigate('/teacher/analytics/progress')}
+                onClick={() => navigate('/teacher/analytics/students')}
                 className="flex flex-col items-center p-6 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
@@ -230,7 +230,7 @@ const TeacherProfilePage: React.FC = () => {
 
               {/* 课程效果分析 */}
               <button
-                onClick={() => navigate('/teacher/analytics/courses')}
+                onClick={() => navigate('/teacher/analytics')}
                 className="flex flex-col items-center p-6 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-teal-200 transition-colors">
@@ -244,7 +244,7 @@ const TeacherProfilePage: React.FC = () => {
 
               {/* 实验数据分析 */}
               <button
-                onClick={() => navigate('/teacher/analytics/experiments')}
+                onClick={() => navigate('/teacher/analytics')}
                 className="flex flex-col items-center p-6 bg-pink-50 rounded-xl hover:bg-pink-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-pink-200 transition-colors">

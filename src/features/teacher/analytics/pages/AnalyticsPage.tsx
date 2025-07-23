@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../../../pages/layout/MainLayout';
+import { LineChart, BarChart, PieChart, DonutChart, RadarChart } from '../../../../components/charts/ChartComponents';
 
 // 数据分析接口
 interface AnalyticsData {
@@ -148,6 +149,47 @@ const AnalyticsPage: React.FC = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'courses' | 'experiments' | 'students'>('overview');
+  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
+
+  // 图表数据
+  const chartData = {
+    studentProgress: [
+      { label: '1月', value: 78 },
+      { label: '2月', value: 82 },
+      { label: '3月', value: 85 },
+      { label: '4月', value: 88 },
+      { label: '5月', value: 92 }
+    ],
+    courseCompletion: [
+      { label: 'STM32基础', value: 35, color: '#3B82F6' },
+      { label: 'ARM架构', value: 28, color: '#10B981' },
+      { label: 'C语言', value: 22, color: '#F59E0B' },
+      { label: '嵌入式系统', value: 18, color: '#EF4444' },
+      { label: '其他', value: 12, color: '#8B5CF6' }
+    ],
+    experimentSuccess: [
+      { label: '优秀', value: 15, color: '#10B981' },
+      { label: '良好', value: 20, color: '#3B82F6' },
+      { label: '一般', value: 8, color: '#F59E0B' },
+      { label: '需改进', value: 2, color: '#EF4444' }
+    ],
+    teachingMetrics: [
+      { label: '教学质量', value: 92 },
+      { label: '学生满意度', value: 88 },
+      { label: '课程完成率', value: 85 },
+      { label: '互动参与度', value: 90 },
+      { label: '创新程度', value: 86 }
+    ],
+    weeklyActivity: [
+      { label: '周一', value: 25 },
+      { label: '周二', value: 32 },
+      { label: '周三', value: 28 },
+      { label: '周四', value: 35 },
+      { label: '周五', value: 30 },
+      { label: '周六', value: 15 },
+      { label: '周日', value: 18 }
+    ]
+  };
 
   // 模拟数据加载
   useEffect(() => {
@@ -158,7 +200,7 @@ const AnalyticsPage: React.FC = () => {
     };
 
     loadAnalytics();
-  }, []);
+  }, [timeRange]);
 
   if (loading) {
     return (
@@ -227,184 +269,273 @@ const AnalyticsPage: React.FC = () => {
   return (
     <MainLayout>
       <div className="page-container">
-        {/* 页面标题 - 现代化设计 */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-emerald-600 to-green-800 rounded-2xl mb-8 shadow-xl">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-48 translate-x-48"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+        {/* 页面标题 - 美化版 */}
+        <div className="relative bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-8 mb-8 overflow-hidden">
+          {/* 背景装饰 */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-200/30 to-teal-200/30 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-emerald-200/30 to-cyan-200/30 rounded-full blur-2xl translate-y-12 -translate-x-12"></div>
 
-          <div className="relative px-8 py-12">
+          <div className="relative">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-4xl font-bold text-white mb-3">数据分析</h1>
-                <p className="text-green-100 text-lg mb-6 max-w-2xl">
-                  查看学习数据统计和分析报表，优化教学效果
-                </p>
-                <div className="flex items-center space-x-6">
-                  <div className="flex items-center space-x-2 text-white/90">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-sm">数据状态：实时更新</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-white/90">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    <span className="text-sm">分析 {analyticsData.overview.totalStudents} 名学生数据</span>
-                  </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <span className="text-3xl">📊</span>
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+                    教学数据分析
+                  </h1>
+                  <p className="text-gray-700 text-lg">
+                    查看学习数据统计和分析报表，优化教学效果
+                  </p>
                 </div>
               </div>
-              <div className="hidden lg:block">
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <span className="text-6xl">📊</span>
-                </div>
+
+              {/* 时间范围选择器 */}
+              <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-xl p-2">
+                {[
+                  { key: '7d', label: '7天' },
+                  { key: '30d', label: '30天' },
+                  { key: '90d', label: '90天' }
+                ].map(option => (
+                  <button
+                    key={option.key}
+                    onClick={() => setTimeRange(option.key as any)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      timeRange === option.key
+                        ? 'bg-green-500 text-white shadow-md'
+                        : 'text-gray-600 hover:bg-white hover:shadow-sm'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* 标签导航 - 现代化设计 */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">分析维度</h3>
-            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
-              </svg>
-            </div>
-          </div>
+        {/* 标签页导航 - 美化版 */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 mb-8 overflow-hidden">
+          <div className="relative">
+            {/* 背景装饰 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-green-50/50 via-emerald-50/30 to-teal-50/50"></div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { id: 'overview', name: '总览', icon: '📊', color: 'from-green-500 to-green-600' },
-              { id: 'courses', name: '课程分析', icon: '📚', color: 'from-emerald-500 to-emerald-600' },
-              { id: 'experiments', name: '实验分析', icon: '🧪', color: 'from-teal-500 to-teal-600' },
-              { id: 'students', name: '学生进度', icon: '👥', color: 'from-cyan-500 to-cyan-600' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedTab(tab.id as any)}
-                className={`group p-4 rounded-xl border transition-all duration-300 text-left ${
-                  selectedTab === tab.id
-                    ? 'border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 shadow-md'
-                    : 'border-gray-200 hover:border-green-200 hover:shadow-md hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50'
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 bg-gradient-to-br ${tab.color} rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
-                    <span className="text-white text-lg">{tab.icon}</span>
+            <nav className="relative flex space-x-2 p-2">
+              {[
+                { key: 'overview', label: '数据概览', icon: '📈', desc: '核心指标、趋势分析', gradient: 'from-green-500 to-emerald-600' },
+                { key: 'courses', label: '课程分析', icon: '📚', desc: '课程完成率、学习进度', gradient: 'from-blue-500 to-cyan-600' },
+                { key: 'experiments', label: '实验分析', icon: '🧪', desc: '实验成功率、难度分析', gradient: 'from-purple-500 to-violet-600' },
+                { key: 'students', label: '学生分析', icon: '👥', desc: '学生表现、学习行为', gradient: 'from-orange-500 to-red-600' }
+              ].map(tab => (
+                <button
+                  key={tab.key}
+                  onClick={() => setSelectedTab(tab.key as any)}
+                  className={`group relative flex items-center space-x-3 px-6 py-4 rounded-xl font-medium text-sm transition-all duration-300 hover:scale-105 ${
+                    selectedTab === tab.key
+                      ? `bg-gradient-to-r ${tab.gradient} text-white shadow-lg`
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white/60'
+                  }`}
+                >
+                  {/* 选中状态的背景光效 */}
+                  {selectedTab === tab.key && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-xl"></div>
+                  )}
+
+                  {/* 图标容器 */}
+                  <div className={`relative z-10 w-8 h-8 rounded-lg flex items-center justify-center ${
+                    selectedTab === tab.key
+                      ? 'bg-white/20'
+                      : 'bg-gray-100 group-hover:bg-white'
+                  } transition-colors duration-300`}>
+                    <span className="text-lg">{tab.icon}</span>
                   </div>
-                  <div>
-                    <h4 className={`font-semibold transition-colors ${
-                      selectedTab === tab.id ? 'text-green-700' : 'text-gray-900 group-hover:text-green-700'
+
+                  {/* 标签文字 */}
+                  <div className="relative z-10 text-left">
+                    <div>{tab.label}</div>
+                    <div className={`text-xs mt-1 ${
+                      selectedTab === tab.key ? 'text-white/80' : 'text-gray-400'
                     }`}>
-                      {tab.name}
-                    </h4>
+                      {tab.desc}
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+
+                  {/* 悬停时的底部指示器 */}
+                  {selectedTab !== tab.key && (
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-500 to-emerald-600 group-hover:w-8 transition-all duration-300 rounded-full"></div>
+                  )}
+                </button>
+              ))}
+            </nav>
           </div>
         </div>
 
         {/* 内容区域 */}
         {selectedTab === 'overview' && (
           <div className="space-y-8">
-            {/* 总览统计 - 现代化卡片设计 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-600/20 rounded-full -translate-y-10 translate-x-10"></div>
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
-                    <span className="text-white text-2xl">👥</span>
-                  </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">{analyticsData.overview.totalStudents}</div>
-                  <div className="text-lg font-medium text-gray-700 mb-3">总学生数</div>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    活跃: {analyticsData.overview.activeStudents} ({Math.round(analyticsData.overview.activeStudents / analyticsData.overview.totalStudents * 100)}%)
+            {/* 核心指标卡片 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  title: '总学生数',
+                  value: analyticsData?.overview.totalStudents || 0,
+                  change: '+5',
+                  trend: 'up',
+                  icon: '👥',
+                  color: 'from-green-500 to-green-600',
+                  bgColor: 'from-green-50 to-green-100'
+                },
+                {
+                  title: '课程数量',
+                  value: analyticsData?.overview.totalCourses || 0,
+                  change: '+2',
+                  trend: 'up',
+                  icon: '📚',
+                  color: 'from-blue-500 to-blue-600',
+                  bgColor: 'from-blue-50 to-blue-100'
+                },
+                {
+                  title: '平均完成率',
+                  value: `${analyticsData?.overview.avgCompletionRate || 0}%`,
+                  change: '+3.2%',
+                  trend: 'up',
+                  icon: '✅',
+                  color: 'from-emerald-500 to-emerald-600',
+                  bgColor: 'from-emerald-50 to-emerald-100'
+                },
+                {
+                  title: '活跃学生',
+                  value: analyticsData?.overview.activeStudents || 0,
+                  change: '+8',
+                  trend: 'up',
+                  icon: '🔥',
+                  color: 'from-orange-500 to-orange-600',
+                  bgColor: 'from-orange-50 to-orange-100'
+                }
+              ].map((metric, index) => (
+                <div key={index} className={`relative bg-gradient-to-br ${metric.bgColor} rounded-2xl p-6 shadow-sm border border-white/50 overflow-hidden group hover:shadow-lg transition-all duration-300`}>
+                  {/* 背景装饰 */}
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-white/30 to-transparent rounded-full blur-xl -translate-y-8 translate-x-8"></div>
+
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${metric.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                        <span className="text-xl">{metric.icon}</span>
+                      </div>
+                      <div className={`flex items-center space-x-1 text-sm font-medium ${
+                        metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        <span>{metric.change}</span>
+                        <svg className={`w-4 h-4 ${metric.trend === 'up' ? 'rotate-0' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17l9.2-9.2M17 17V7H7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{metric.value}</div>
+                    <div className="text-sm text-gray-600">{metric.title}</div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* 图表区域 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* 学生进度趋势 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <LineChart
+                  data={chartData.studentProgress}
+                  title="学生进度趋势"
+                  color="#10B981"
+                  height={250}
+                />
               </div>
 
-              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-200 hover:-translate-y-1">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20 rounded-full -translate-y-10 translate-x-10"></div>
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
-                    <span className="text-white text-2xl">📈</span>
-                  </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">{analyticsData.overview.avgCompletionRate}%</div>
-                  <div className="text-lg font-medium text-gray-700 mb-3">平均完成率</div>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
-                    课程和实验综合
-                  </div>
-                </div>
+              {/* 每周活跃度 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <BarChart
+                  data={chartData.weeklyActivity.map(item => ({
+                    ...item,
+                    color: '#3B82F6'
+                  }))}
+                  title="每周活跃度"
+                  height={250}
+                />
               </div>
 
-              <div className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-teal-200 hover:-translate-y-1">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-teal-500/10 to-teal-600/20 rounded-full -translate-y-10 translate-x-10"></div>
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
-                    <span className="text-white text-2xl">⏰</span>
-                  </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">{formatTime(analyticsData.overview.avgStudyTime)}</div>
-                  <div className="text-lg font-medium text-gray-700 mb-3">平均学习时长</div>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
-                    每位学生
-                  </div>
-                </div>
+              {/* 课程完成分布 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <PieChart
+                  data={chartData.courseCompletion}
+                  title="课程完成分布"
+                  size={300}
+                />
+              </div>
+
+              {/* 教学指标雷达图 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <RadarChart
+                  data={chartData.teachingMetrics}
+                  title="教学综合指标"
+                  size={300}
+                  maxValue={100}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {selectedTab === 'courses' && (
+          <div className="space-y-8">
+            {/* 课程分析图表 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* 课程完成率分布 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <DonutChart
+                  data={chartData.courseCompletion}
+                  title="课程完成率分布"
+                  size={300}
+                  centerText={`${analyticsData?.overview.totalCourses || 0}`}
+                />
+              </div>
+
+              {/* 学生进度趋势 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <LineChart
+                  data={chartData.studentProgress}
+                  title="学生进度趋势"
+                  color="#3B82F6"
+                  height={250}
+                />
               </div>
             </div>
 
-            {/* 最近活动趋势 - 现代化设计 */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">最近活动趋势</h3>
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-              </div>
-
+            {/* 课程详细列表 */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">课程详细分析</h3>
               <div className="space-y-4">
-                {analyticsData.timeAnalytics.slice(-7).map((day, index) => (
-                  <div key={day.date} className="group p-4 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-cyan-50 transition-all duration-300">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md">
-                          <span className="text-white font-bold text-sm">
-                            {new Date(day.date).getDate()}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-gray-900 group-hover:text-cyan-700 transition-colors">
-                            {new Date(day.date).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
-                          </div>
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 group-hover:text-cyan-600 transition-colors mt-1">
-                            <span className="flex items-center">
-                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                              {day.activeUsers} 活跃用户
-                            </span>
-                            <span className="flex items-center">
-                              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                              {formatTime(day.studyTime)} 学习时长
-                            </span>
-                            <span className="flex items-center">
-                              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                              {day.completedTasks} 完成任务
-                            </span>
-                          </div>
-                        </div>
+                {chartData.courseCompletion.map((course, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: course.color }}
+                      ></div>
+                      <span className="font-medium text-gray-900">{course.label}</span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="text-right">
+                        <div className="font-medium text-gray-900">{course.value}人</div>
+                        <div className="text-sm text-gray-600">已完成</div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-32 bg-gray-200 rounded-full h-3">
-                          <div
-                            className="bg-gradient-to-r from-cyan-500 to-cyan-600 h-3 rounded-full transition-all duration-500"
-                            style={{ width: `${(day.activeUsers / analyticsData.overview.totalStudents) * 100}%` }}
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-gray-700 w-12 text-right">
-                          {Math.round((day.activeUsers / analyticsData.overview.totalStudents) * 100)}%
-                        </span>
+                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full"
+                          style={{
+                            width: `${(course.value / Math.max(...chartData.courseCompletion.map(c => c.value))) * 100}%`,
+                            backgroundColor: course.color
+                          }}
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -414,255 +545,98 @@ const AnalyticsPage: React.FC = () => {
           </div>
         )}
 
-        {selectedTab === 'courses' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              {analyticsData.courseAnalytics.map((course, index) => (
-                <div key={course.courseId} className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200">
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
-                        index % 4 === 0 ? 'bg-gradient-to-br from-green-500 to-green-600' :
-                        index % 4 === 1 ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' :
-                        index % 4 === 2 ? 'bg-gradient-to-br from-teal-500 to-teal-600' :
-                        'bg-gradient-to-br from-cyan-500 to-cyan-600'
-                      }`}>
-                        <span className="text-white text-lg">📚</span>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-700 transition-colors mb-2">{course.courseName}</h3>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(course.difficulty)}`}>
-                          {getDifficultyText(course.difficulty)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-3xl font-bold ${getScoreColor(course.avgScore)} mb-1`}>
-                        {course.avgScore}
-                      </div>
-                      <div className="text-sm text-gray-600">平均分数</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <span className="text-white text-lg">👥</span>
-                      </div>
-                      <div className="text-2xl font-bold text-blue-600 mb-1">{course.enrolledStudents}</div>
-                      <div className="text-sm text-blue-700 font-medium">报名学生</div>
-                    </div>
-                    <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                      <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <span className="text-white text-lg">✅</span>
-                      </div>
-                      <div className="text-2xl font-bold text-green-600 mb-1">{course.completedStudents}</div>
-                      <div className="text-sm text-green-700 font-medium">完成学生</div>
-                    </div>
-                    <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <span className="text-white text-lg">📊</span>
-                      </div>
-                      <div className="text-2xl font-bold text-purple-600 mb-1">{course.completionRate}%</div>
-                      <div className="text-sm text-purple-700 font-medium">完成率</div>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">课程进度</span>
-                      <span className="text-sm font-medium text-gray-900">{course.completionRate}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${course.completionRate}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* 操作按钮 */}
-                  <div className="flex justify-end pt-4 border-t border-gray-100">
-                    <button
-                      onClick={() => navigate(`/teacher/analytics/course/${course.courseId}`)}
-                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
-                    >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                      查看详细分析
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {selectedTab === 'experiments' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              {analyticsData.experimentAnalytics.map((experiment) => (
-                <div key={experiment.experimentId} className="card">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">{experiment.experimentName}</h3>
-                        <div className="text-sm text-gray-600">
-                          平均完成时间: {formatTime(experiment.avgTime)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className={`text-2xl font-bold ${getSuccessRateColor(experiment.successRate)}`}>
-                          {experiment.successRate}%
-                        </div>
-                        <div className="text-sm text-gray-600">成功率</div>
-                      </div>
-                    </div>
+          <div className="space-y-8">
+            {/* 实验分析图表 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* 实验成功率分布 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <PieChart
+                  data={chartData.experimentSuccess}
+                  title="实验成功率分布"
+                  size={300}
+                />
+              </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-blue-600">{experiment.attemptedStudents}</div>
-                        <div className="text-sm text-gray-600">尝试学生</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-green-600">{experiment.completedStudents}</div>
-                        <div className="text-sm text-gray-600">完成学生</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                          <div
-                            className="bg-green-600 h-2 rounded-full"
-                            style={{ width: `${experiment.successRate}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {experiment.commonErrors.length > 0 && (
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900 mb-2">常见错误:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {experiment.commonErrors.map((error, index) => (
-                            <span
-                              key={index}
-                              className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded"
-                            >
-                              {error}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 操作按钮 */}
-                    <div className="flex justify-end pt-4 border-t border-gray-200">
-                      <button
-                        onClick={() => navigate(`/teacher/analytics/experiment/${experiment.experimentId}`)}
-                        className="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors"
-                      >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        查看详细分析
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {/* 每周实验活跃度 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <BarChart
+                  data={chartData.weeklyActivity.map(item => ({
+                    ...item,
+                    color: '#8B5CF6'
+                  }))}
+                  title="每周实验活跃度"
+                  height={250}
+                />
+              </div>
             </div>
           </div>
         )}
 
         {selectedTab === 'students' && (
-          <div className="space-y-6">
-            {/* 学生成绩分布 */}
-            <div className="card">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="font-medium text-gray-900">学生成绩分布</h3>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-600">{analyticsData.studentProgress.excellent}</div>
-                    <div className="text-sm text-gray-600">优秀 (90+)</div>
-                    <div className="text-xs text-gray-500">
-                      {Math.round(analyticsData.studentProgress.excellent / analyticsData.overview.totalStudents * 100)}%
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">{analyticsData.studentProgress.good}</div>
-                    <div className="text-sm text-gray-600">良好 (80-89)</div>
-                    <div className="text-xs text-gray-500">
-                      {Math.round(analyticsData.studentProgress.good / analyticsData.overview.totalStudents * 100)}%
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-yellow-600">{analyticsData.studentProgress.average}</div>
-                    <div className="text-sm text-gray-600">一般 (70-79)</div>
-                    <div className="text-xs text-gray-500">
-                      {Math.round(analyticsData.studentProgress.average / analyticsData.overview.totalStudents * 100)}%
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-red-600">{analyticsData.studentProgress.poor}</div>
-                    <div className="text-sm text-gray-600">待提高 (&lt;70)</div>
-                    <div className="text-xs text-gray-500">
-                      {Math.round(analyticsData.studentProgress.poor / analyticsData.overview.totalStudents * 100)}%
-                    </div>
-                  </div>
-                </div>
+          <div className="space-y-8">
+            {/* 学生分析图表 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* 教学指标雷达图 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <RadarChart
+                  data={chartData.teachingMetrics}
+                  title="学生表现指标"
+                  size={300}
+                  maxValue={100}
+                />
               </div>
 
-              {/* 操作按钮 */}
-              <div className="flex justify-end p-4 border-t border-gray-200">
-                <button
-                  onClick={() => navigate('/teacher/analytics/students')}
-                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  查看详细进度分析
-                </button>
+              {/* 学生活跃度趋势 */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <LineChart
+                  data={chartData.studentProgress}
+                  title="学生活跃度趋势"
+                  color="#EF4444"
+                  height={250}
+                />
               </div>
             </div>
 
-            {/* 教学建议 */}
-            <div className="card">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="font-medium text-gray-900">教学建议</h3>
-              </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-yellow-500">⚠️</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">需要关注的课程</h4>
-                      <p className="text-sm text-gray-600">
-                        "定时器与PWM控制" 完成率较低(50%)，建议增加实践环节和答疑时间
-                      </p>
+            {/* 学生表现排行 */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">学生表现排行</h3>
+              <div className="space-y-3">
+                {[
+                  { name: '张三', score: 95, progress: 98, courses: 5 },
+                  { name: '李四', score: 92, progress: 95, courses: 4 },
+                  { name: '王五', score: 88, progress: 90, courses: 5 },
+                  { name: '赵六', score: 85, progress: 88, courses: 3 },
+                  { name: '钱七', score: 82, progress: 85, courses: 4 }
+                ].map((student, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                        index === 0 ? 'bg-yellow-500' :
+                        index === 1 ? 'bg-gray-400' :
+                        index === 2 ? 'bg-orange-500' :
+                        'bg-blue-500'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <span className="font-medium text-gray-900">{student.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-4 text-sm">
+                      <div className="text-center">
+                        <div className="font-medium text-gray-900">{student.score}</div>
+                        <div className="text-gray-600">分数</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-medium text-gray-900">{student.progress}%</div>
+                        <div className="text-gray-600">进度</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-medium text-gray-900">{student.courses}</div>
+                        <div className="text-gray-600">课程</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-start space-x-3">
-                    <span className="text-red-500">🚨</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">常见问题</h4>
-                      <p className="text-sm text-gray-600">
-                        中断配置和定时器设置是学生的主要困难点，建议制作专门的教学视频
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <span className="text-green-500">✅</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">表现良好</h4>
-                      <p className="text-sm text-gray-600">
-                        基础课程完成率较高，学生对GPIO和LED控制掌握良好
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

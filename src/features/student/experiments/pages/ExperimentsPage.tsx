@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import MainLayout from '../../../../pages/layout/MainLayout';
 import { experimentsList } from '../data/realExperiments';
 import { ExtendedExperimentApi, ExperimentListItem as ApiExperimentListItem } from '../../../../api/experimentApi';
+import EnhancedSearchBox, { SearchFilter, SearchSuggestion } from '../../../../components/search/EnhancedSearchBox';
 
 // 实验卡片组件 - 优化版本
 const ExperimentCard: React.FC<{ experiment: ApiExperimentListItem }> = ({ experiment }) => {
@@ -248,6 +249,45 @@ const ExperimentsPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
 
+  // 处理快捷筛选
+  const handleQuickFilter = (value: string) => {
+    switch (value) {
+      case 'popular':
+        setSearchTerm('热门');
+        break;
+      case 'new':
+        setSearchTerm('新');
+        break;
+      case 'GPIO':
+        setSearchTerm('GPIO');
+        break;
+      case '通信':
+        setSearchTerm('通信');
+        break;
+      case '控制':
+        setSearchTerm('控制');
+        break;
+      default:
+        setSearchTerm(value);
+    }
+  };
+
+  // 处理筛选器变化
+  const handleFilterChange = (key: string, value: any) => {
+    if (key === 'type') {
+      setSelectedType(value);
+    } else if (key === 'difficulty') {
+      setSelectedDifficulty(value);
+    }
+  };
+
+  // 清除所有筛选
+  const handleClearAll = () => {
+    setSearchTerm('');
+    setSelectedType('all');
+    setSelectedDifficulty('all');
+  };
+
   // 加载真实实验数据
   useEffect(() => {
     const loadExperiments = async () => {
@@ -289,6 +329,53 @@ const ExperimentsPage: React.FC = () => {
 
   // 获取实验类型列表
   const experimentTypes = Array.from(new Set(experiments.map(e => e.category).filter(Boolean)));
+
+  // 搜索建议数据
+  const searchSuggestions: SearchSuggestion[] = [
+    { id: '1', text: 'GPIO控制实验', type: 'popular', count: 89 },
+    { id: '2', text: 'LED闪烁实验', type: 'popular', count: 156 },
+    { id: '3', text: '串口通信实验', type: 'popular', count: 67 },
+    { id: '4', text: 'PWM控制实验', type: 'popular', count: 45 },
+    { id: '5', text: '定时器实验', type: 'suggestion', count: 34 },
+    { id: '6', text: 'ADC采样实验', type: 'suggestion', count: 28 }
+  ];
+
+  // 筛选器配置
+  const searchFilters: SearchFilter[] = [
+    {
+      key: 'type',
+      label: '实验类型',
+      type: 'select',
+      options: [
+        { value: 'all', label: '全部类型', count: experiments.length },
+        ...experimentTypes.map(type => ({
+          value: type,
+          label: type,
+          count: experiments.filter(exp => exp.category === type).length
+        }))
+      ]
+    },
+    {
+      key: 'difficulty',
+      label: '难度等级',
+      type: 'select',
+      options: [
+        { value: 'all', label: '全部等级', count: experiments.length },
+        { value: 'beginner', label: '初级', count: experiments.filter(exp => exp.difficulty === 'beginner').length },
+        { value: 'intermediate', label: '中级', count: experiments.filter(exp => exp.difficulty === 'intermediate').length },
+        { value: 'advanced', label: '高级', count: experiments.filter(exp => exp.difficulty === 'advanced').length }
+      ]
+    }
+  ];
+
+  // 快捷筛选标签
+  const quickFilters = [
+    { label: '热门实验', value: 'popular', count: 8 },
+    { label: '新实验', value: 'new', count: 3 },
+    { label: 'GPIO相关', value: 'GPIO', count: 12 },
+    { label: '通信实验', value: '通信', count: 6 },
+    { label: '控制实验', value: '控制', count: 9 }
+  ];
 
   return (
     <MainLayout>
@@ -451,104 +538,25 @@ const ExperimentsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 搜索和筛选 - 重新设计 */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">筛选实验</h3>
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
-              </svg>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                🔍 搜索实验
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300"
-                  placeholder="输入实验名称、描述或标签..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                📂 实验类型
-              </label>
-              <div className="relative">
-                <select
-                  className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300 appearance-none bg-white"
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                >
-                  <option value="all">全部类型</option>
-                  {experimentTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                ⭐ 难度等级
-              </label>
-              <div className="relative">
-                <select
-                  className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 group-hover:border-purple-300 appearance-none bg-white"
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
-                >
-                  <option value="all">全部等级</option>
-                  <option value="beginner">初级</option>
-                  <option value="intermediate">中级</option>
-                  <option value="advanced">高级</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 筛选结果统计 */}
-          <div className="mt-6 pt-6 border-t border-gray-100">
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <span>找到 {filteredExperiments.length} 个实验</span>
-              {(searchTerm || selectedType !== 'all' || selectedDifficulty !== 'all') && (
-                <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedType('all');
-                    setSelectedDifficulty('all');
-                  }}
-                  className="text-purple-600 hover:text-purple-800 font-medium"
-                >
-                  清除筛选
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+        {/* 增强的搜索框 */}
+        <EnhancedSearchBox
+          placeholder="搜索实验名称、描述或标签..."
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          filters={searchFilters}
+          filterValues={{ type: selectedType, difficulty: selectedDifficulty }}
+          onFilterChange={handleFilterChange}
+          suggestions={searchSuggestions}
+          showSuggestions={true}
+          resultCount={filteredExperiments.length}
+          onClear={handleClearAll}
+          theme="purple"
+          size="md"
+          showAdvancedFilters={true}
+          quickFilters={quickFilters}
+          onQuickFilter={handleQuickFilter}
+          className="mb-8"
+        />
 
         {/* 实验列表 */}
         {loading ? (

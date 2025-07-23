@@ -24,12 +24,41 @@ const CourseAnalyticsPage = React.lazy(() => import('../features/teacher/analyti
 const ExperimentAnalyticsPage = React.lazy(() => import('../features/teacher/analytics/pages/ExperimentAnalyticsPage'));
 const StudentProgressPage = React.lazy(() => import('../features/teacher/analytics/pages/StudentProgressPage'));
 const StudentDetailPage = React.lazy(() => import('../features/teacher/analytics/pages/StudentDetailPage'));
+// 教师课程管理页面
+const TeacherCourseManagementPage = React.lazy(() => import('../features/teacher/course/pages/CourseManagementPage'));
+const TeacherCourseDetailPage = React.lazy(() => import('../features/teacher/course/pages/CourseDetailPage'));
+const CourseSchedulePage = React.lazy(() => import('../features/teacher/course/pages/CourseSchedulePage'));
+// 教师实验管理页面
+const TeacherExperimentManagementPage = React.lazy(() => import('../features/teacher/experiment/pages/ExperimentManagementPage'));
+const TeacherExperimentDetailPage = React.lazy(() => import('../features/teacher/experiment/pages/ExperimentDetailPage'));
+// 学生功能页面
+const StudentAchievementsPage = React.lazy(() => import('../features/student/pages/AchievementsPage'));
+const StudentFavoritesPage = React.lazy(() => import('../features/student/pages/FavoritesPage'));
+const StudentLearningHistoryPage = React.lazy(() => import('../features/student/pages/LearningHistoryPage'));
+const StudentLearningProgressPage = React.lazy(() => import('../features/student/pages/LearningProgressPage'));
+const StudentNotificationPage = React.lazy(() => import('../features/student/pages/StudentNotificationPage'));
+const StudentExportPage = React.lazy(() => import('../features/student/pages/StudentExportPage'));
+const StudentTestPage = React.lazy(() => import('../features/student/pages/TestPage'));
+const TeacherNotificationPage = React.lazy(() => import('../features/teacher/pages/TeacherNotificationPage'));
+const TeacherExportPage = React.lazy(() => import('../features/teacher/pages/TeacherExportPage'));
+const AdminNotificationPage = React.lazy(() => import('../features/admin/pages/AdminNotificationPage'));
+const AdminExportPage = React.lazy(() => import('../features/admin/pages/AdminExportPage'));
+const NotificationDemoPage = React.lazy(() => import('../features/notifications/pages/NotificationDemoPage'));
+const NotificationNavbarDemo = React.lazy(() => import('../features/notifications/pages/NotificationNavbarDemo'));
+const BatchOperationDemo = React.lazy(() => import('../features/notifications/pages/BatchOperationDemo'));
+const NotificationTestPage = React.lazy(() => import('../features/notifications/pages/NotificationTestPage'));
+const AnalyticsDemo = React.lazy(() => import('../features/admin/analytics/pages/AnalyticsDemo'));
+const TeacherAnalyticsDemo = React.lazy(() => import('../features/teacher/analytics/pages/TeacherAnalyticsDemo'));
+const StudentHistoryDemo = React.lazy(() => import('../features/student/history/pages/StudentHistoryDemo'));
+const SearchBoxDemo = React.lazy(() => import('../features/student/components/SearchBoxDemo'));
 const UserDetailPage = React.lazy(() => import('../features/admin/userMgmt/pages/UserDetailPage'));
 const UserEditPage = React.lazy(() => import('../features/admin/userMgmt/pages/UserEditPage'));
 const AnalyticsPage = React.lazy(() => import('../features/teacher/analytics/pages/AnalyticsPage'));
 const AdminDashboard = React.lazy(() => import('../features/admin/dashboard/pages/AdminDashboard'));
+const UserManagementPage = React.lazy(() => import('../features/admin/userMgmt/pages/UserManagementPage'));
+const UserPermissionAssignmentPage = React.lazy(() => import('../features/admin/userMgmt/pages/UserPermissionAssignmentPage'));
+const SystemAnalyticsPage = React.lazy(() => import('../features/admin/analytics/pages/SystemAnalyticsPage'));
 // 暂时注释掉有JSX问题的页面
-// const UserManagementPage = React.lazy(() => import('../features/admin/userMgmt/pages/UserManagementPage'));
 // const SystemManagementPage = React.lazy(() => import('../features/admin/systemMgmt/pages/SystemManagementPage'));
 const SystemSettingsPage = React.lazy(() => import('../features/admin/settings/pages/SystemSettingsPage'));
 const SystemReportsPage = React.lazy(() => import('../features/admin/reports/pages/SystemReportsPage'));
@@ -111,6 +140,20 @@ export const AppRouter: React.FC = () => {
               <Route path="experiments/test" element={<ExperimentTestPage />} />
               <Route path="experiments/:id" element={<ExperimentDetailPage />} />
               <Route path="profile" element={<StudentProfilePage />} />
+              {/* 学生功能详情页面 */}
+              <Route path="progress" element={<StudentLearningProgressPage />} />
+              <Route path="achievements" element={<StudentAchievementsPage />} />
+              <Route path="favorites" element={<StudentFavoritesPage />} />
+              <Route path="history" element={<StudentLearningHistoryPage />} />
+              <Route path="notifications" element={<StudentNotificationPage />} />
+              <Route path="export" element={<StudentExportPage />} />
+              <Route path="test" element={<StudentTestPage />} />
+              <Route path="notification-demo" element={<NotificationDemoPage />} />
+              <Route path="notification-navbar-demo" element={<NotificationNavbarDemo />} />
+              <Route path="batch-operation-demo" element={<BatchOperationDemo />} />
+              <Route path="notification-test" element={<NotificationTestPage />} />
+              <Route path="history-demo" element={<StudentHistoryDemo />} />
+              <Route path="search-demo" element={<SearchBoxDemo />} />
               <Route path="*" element={<Navigate to="/student/dashboard" replace />} />
             </Routes>
           </RoleGuard>
@@ -121,7 +164,13 @@ export const AppRouter: React.FC = () => {
           <RoleGuard allowedRoles={['teacher']}>
             <Routes>
               <Route path="dashboard" element={<TeacherDashboard />} />
+              <Route path="courses" element={<TeacherCourseManagementPage />} />
+              <Route path="courses/:courseId" element={<TeacherCourseDetailPage />} />
+              <Route path="courses/schedule" element={<CourseSchedulePage />} />
+              <Route path="experiments" element={<TeacherExperimentManagementPage />} />
+              <Route path="experiments/:experimentId" element={<TeacherExperimentDetailPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="analytics-demo" element={<TeacherAnalyticsDemo />} />
               <Route path="analytics/course/:courseId" element={<CourseAnalyticsPage />} />
               <Route path="analytics/experiment/:experimentId" element={<ExperimentAnalyticsPage />} />
               <Route path="analytics/students" element={<StudentProgressPage />} />
@@ -131,6 +180,8 @@ export const AppRouter: React.FC = () => {
               <Route path="management/students" element={<StudentManagementPage />} />
               <Route path="management" element={<Navigate to="/teacher/management/classes" replace />} />
               <Route path="profile" element={<TeacherProfilePage />} />
+              <Route path="notifications" element={<TeacherNotificationPage />} />
+              <Route path="export" element={<TeacherExportPage />} />
               <Route path="*" element={<Navigate to="/teacher/dashboard" replace />} />
             </Routes>
           </RoleGuard>
@@ -141,14 +192,18 @@ export const AppRouter: React.FC = () => {
           <RoleGuard allowedRoles={['admin']}>
             <Routes>
               <Route path="dashboard" element={<AdminDashboard />} />
-              {/* 暂时注释掉有JSX问题的页面 */}
-              {/* <Route path="users" element={<UserManagementPage />} /> */}
+              <Route path="users" element={<UserManagementPage />} />
               <Route path="users/:userId" element={<UserDetailPage />} />
               <Route path="users/:userId/edit" element={<UserEditPage />} />
+              <Route path="users/:userId/permissions" element={<UserPermissionAssignmentPage />} />
+              <Route path="analytics" element={<SystemAnalyticsPage />} />
+              <Route path="analytics-demo" element={<AnalyticsDemo />} />
               {/* <Route path="system" element={<SystemManagementPage />} /> */}
               <Route path="settings" element={<SystemSettingsPage />} />
               <Route path="reports" element={<SystemReportsPage />} />
               <Route path="profile" element={<AdminProfilePage />} />
+              <Route path="notifications" element={<AdminNotificationPage />} />
+              <Route path="export" element={<AdminExportPage />} />
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
             </Routes>
           </RoleGuard>

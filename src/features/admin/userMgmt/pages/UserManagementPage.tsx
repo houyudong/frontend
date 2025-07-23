@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../../../pages/layout/MainLayout';
 import UserEditModal from '../components/UserEditModal';
+import BatchImportModal from '../components/BatchImportModal';
+import SystemSyncModal from '../components/SystemSyncModal';
+import SecurityLogModal from '../components/SecurityLogModal';
 import { User } from '../types/User';
 import { mockUsers } from '../data/mockUsers';
 
@@ -21,10 +24,21 @@ const UserManagementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [showUserModal, setShowUserModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [error, setError] = useState<string | null>(null);
+
+  // 新增功能状态
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [showBatchImport, setShowBatchImport] = useState(false);
+  const [showSystemSync, setShowSystemSync] = useState(false);
+  const [showSecurityLog, setShowSecurityLog] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
+  const [lastSyncTime, setLastSyncTime] = useState<string>('2024-01-15 14:30:00');
+  const [conflictUsers, setConflictUsers] = useState<any[]>([]);
+  const [showConflictModal, setShowConflictModal] = useState(false);
 
   // 模拟数据加载
   useEffect(() => {
@@ -43,15 +57,174 @@ const UserManagementPage: React.FC = () => {
     loadUsers();
   }, []);
 
-  // 过滤用户 - 添加安全检查
+  // 教务系统同步功能
+  const handleSystemSync = async () => {
+    setSyncStatus('syncing');
+    try {
+      // 模拟API调用教务系统
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // 模拟检测到冲突用户
+      const mockConflicts = [
+        {
+          id: 'conflict_1',
+          studentId: '20231101',
+          name: '张三',
+          department: '计算机学院',
+          class: '计算机2023-1班',
+          status: '休学复学',
+          existingUser: users.find(u => u.studentId === '20231101'),
+          newData: {
+            studentId: '20231101',
+            fullName: '张三',
+            department: '计算机学院',
+            class: '计算机2023-1班',
+            email: 'zhangsan@example.com'
+          }
+        }
+      ];
+
+      if (mockConflicts.length > 0) {
+        setConflictUsers(mockConflicts);
+        setShowConflictModal(true);
+      }
+
+      setSyncStatus('success');
+      setLastSyncTime(new Date().toLocaleString());
+    } catch (error) {
+      setSyncStatus('error');
+      console.error('同步失败:', error);
+    }
+  };
+
+  // 批量导入功能
+  const handleBatchImport = async (file: File) => {
+    try {
+      // 模拟Excel文件解析
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // 模拟API调用
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // 模拟导入结果
+      const importResult = {
+        total: 150,
+        success: 145,
+        failed: 5,
+        errors: [
+          { row: 12, error: '学工号格式错误: 2023110A' },
+          { row: 25, error: '邮箱格式错误: invalid-email' },
+          { row: 38, error: '必填字段缺失: 姓名' },
+          { row: 67, error: '院系代码不存在: CS999' },
+          { row: 89, error: '重复学工号: 20231101' }
+        ]
+      };
+
+      alert(`导入完成！成功: ${importResult.success}, 失败: ${importResult.failed}`);
+
+      // 重新加载用户列表
+      loadUsers();
+    } catch (error) {
+      console.error('批量导入失败:', error);
+      alert('批量导入失败，请检查文件格式');
+    }
+  };
+
+  // 批量操作功能
+  const handleBatchOperation = async (operation: 'activate' | 'deactivate' | 'graduate' | 'delete') => {
+    if (selectedUsers.length === 0) {
+      alert('请先选择要操作的用户');
+      return;
+    }
+
+    const confirmMessage = {
+      activate: '确定要激活选中的用户吗？',
+      deactivate: '确定要停用选中的用户吗？',
+      graduate: '确定要将选中的学生标记为已毕业吗？',
+      delete: '确定要删除选中的用户吗？此操作不可恢复！'
+    };
+
+    if (!confirm(confirmMessage[operation])) {
+      return;
+    }
+
+    try {
+      // 模拟批量操作API调用
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      setUsers(prevUsers =>
+        prevUsers.map(user => {
+          if (selectedUsers.includes(user.id)) {
+            switch (operation) {
+              case 'activate':
+                return { ...user, status: 'active' as const };
+              case 'deactivate':
+                return { ...user, status: 'inactive' as const };
+              case 'graduate':
+                return { ...user, status: 'graduated' as const };
+              case 'delete':
+                return null;
+              default:
+                return user;
+            }
+          }
+          return user;
+        }).filter(Boolean) as User[]
+      );
+
+      setSelectedUsers([]);
+      alert(`批量${operation === 'activate' ? '激活' : operation === 'deactivate' ? '停用' : operation === 'graduate' ? '毕业归档' : '删除'}操作完成`);
+    } catch (error) {
+      console.error('批量操作失败:', error);
+      alert('批量操作失败，请重试');
+    }
+  };
+
+  // 用户选择功能
+  const handleUserSelect = (userId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(prev => [...prev, userId]);
+    } else {
+      setSelectedUsers(prev => prev.filter(id => id !== userId));
+    }
+  };
+
+  // 全选功能
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(filteredUsers.map(user => user.id));
+    } else {
+      setSelectedUsers([]);
+    }
+  };
+
+  // 过滤用户 - 添加院系筛选
   const filteredUsers = (users || []).filter(user => {
     const matchesSearch = user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+                         user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.studentId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.teacherId?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-    return matchesSearch && matchesRole && matchesStatus;
+    const matchesDepartment = departmentFilter === 'all' || user.department === departmentFilter;
+    return matchesSearch && matchesRole && matchesStatus && matchesDepartment;
   });
+
+  // 重新加载用户数据
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setUsers(mockUsers);
+    } catch (err) {
+      console.error('加载用户数据失败:', err);
+      setError('加载用户数据失败');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 获取角色颜色
   const getRoleColor = (role: string) => {
@@ -304,6 +477,123 @@ const UserManagementPage: React.FC = () => {
             </>
           )}
 
+          {/* 功能操作区域 */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+              {/* 左侧：主要功能按钮 */}
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => setShowUserModal(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>新增用户</span>
+                </button>
+
+                <button
+                  onClick={() => setShowBatchImport(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <span>批量导入</span>
+                </button>
+
+                <button
+                  onClick={() => setShowSystemSync(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>教务同步</span>
+                  {syncStatus === 'syncing' && (
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white ml-1"></div>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setShowSecurityLog(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>安全日志</span>
+                </button>
+              </div>
+
+              {/* 右侧：同步状态和时间 */}
+              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <div className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    syncStatus === 'success' ? 'bg-green-500' :
+                    syncStatus === 'syncing' ? 'bg-blue-500 animate-pulse' :
+                    syncStatus === 'error' ? 'bg-red-500' :
+                    'bg-gray-400'
+                  }`}></div>
+                  <span>
+                    {syncStatus === 'success' ? '同步正常' :
+                     syncStatus === 'syncing' ? '同步中...' :
+                     syncStatus === 'error' ? '同步异常' :
+                     '待同步'}
+                  </span>
+                </div>
+                <div className="text-gray-400">|</div>
+                <div>上次同步: {lastSyncTime}</div>
+              </div>
+            </div>
+
+            {/* 批量操作区域 */}
+            {selectedUsers.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm text-gray-600">
+                      已选择 {selectedUsers.length} 个用户
+                    </span>
+                    <button
+                      onClick={() => setSelectedUsers([])}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      取消选择
+                    </button>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleBatchOperation('activate')}
+                      className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200"
+                    >
+                      批量激活
+                    </button>
+                    <button
+                      onClick={() => handleBatchOperation('deactivate')}
+                      className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200"
+                    >
+                      批量停用
+                    </button>
+                    <button
+                      onClick={() => handleBatchOperation('graduate')}
+                      className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                    >
+                      毕业归档
+                    </button>
+                    <button
+                      onClick={() => handleBatchOperation('delete')}
+                      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                    >
+                      批量删除
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* 搜索和筛选 - 现代化设计 */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
             <div className="flex items-center justify-between mb-6">
@@ -322,7 +612,7 @@ const UserManagementPage: React.FC = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   搜索用户
@@ -380,6 +670,33 @@ const UserManagementPage: React.FC = () => {
                     <option value="active">🟢 活跃</option>
                     <option value="inactive">🟡 不活跃</option>
                     <option value="suspended">🔴 暂停</option>
+                    <option value="graduated">🎓 已毕业</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  院系筛选
+                </label>
+                <div className="relative">
+                  <select
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white appearance-none"
+                    value={departmentFilter}
+                    onChange={(e) => setDepartmentFilter(e.target.value)}
+                  >
+                    <option value="all">全部院系</option>
+                    <option value="计算机学院">💻 计算机学院</option>
+                    <option value="电子工程学院">⚡ 电子工程学院</option>
+                    <option value="机械工程学院">⚙️ 机械工程学院</option>
+                    <option value="数学学院">📐 数学学院</option>
+                    <option value="物理学院">🔬 物理学院</option>
+                    <option value="管理学院">📊 管理学院</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -454,6 +771,14 @@ const UserManagementPage: React.FC = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                          onChange={(e) => handleSelectAll(e.target.checked)}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                      </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         <div className="flex items-center space-x-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -467,7 +792,23 @@ const UserManagementPage: React.FC = () => {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
+                          <span>学工号</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <div className="flex items-center space-x-2">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
                           <span>角色</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <div className="flex items-center space-x-2">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                          <span>院系</span>
                         </div>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -508,6 +849,14 @@ const UserManagementPage: React.FC = () => {
                     {filteredUsers.map((user, index) => (
                       <tr key={user.id} className="group hover:bg-gray-50 transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(user.id)}
+                            onChange={(e) => handleUserSelect(user.id, e.target.checked)}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-4">
                             <div className="relative">
                               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md">
@@ -523,9 +872,25 @@ const UserManagementPage: React.FC = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user.studentId || user.teacherId || 'N/A'}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {user.role === 'student' ? '学号' : user.role === 'teacher' ? '工号' : '管理员ID'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
                             {user.role === 'admin' ? '👑' : user.role === 'teacher' ? '👨‍🏫' : '🎓'} {getRoleText(user.role)}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {user.department || '未分配'}
+                          </div>
+                          {user.class && (
+                            <div className="text-sm text-gray-500">{user.class}</div>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <select
@@ -610,20 +975,53 @@ const UserManagementPage: React.FC = () => {
           )}
         </div>
 
-          {/* 用户编辑模态框 */}
-          {showUserModal && (
-            <UserEditModal
-              isOpen={showUserModal}
-              onClose={() => {
-                setShowUserModal(false);
-                setEditingUser(null);
-              }}
-              onSave={handleSaveUser}
-              user={editingUser}
-              mode={modalMode}
-            />
-          )}
-        </div>
+        {/* 用户编辑模态框 */}
+        {showUserModal && (
+          <UserEditModal
+            isOpen={showUserModal}
+            onClose={() => {
+              setShowUserModal(false);
+              setEditingUser(null);
+            }}
+            onSave={handleSaveUser}
+            user={editingUser}
+            mode={modalMode}
+          />
+        )}
+
+        {/* 批量导入模态框 */}
+        {showBatchImport && (
+          <BatchImportModal
+            isOpen={showBatchImport}
+            onClose={() => setShowBatchImport(false)}
+            onImport={handleBatchImport}
+          />
+        )}
+
+        {/* 教务系统同步模态框 */}
+        {showSystemSync && (
+          <SystemSyncModal
+            isOpen={showSystemSync}
+            onClose={() => setShowSystemSync(false)}
+            onSync={handleSystemSync}
+            syncStatus={syncStatus}
+            lastSyncTime={lastSyncTime}
+            conflictUsers={conflictUsers}
+            onResolveConflicts={(resolutions) => {
+              console.log('处理冲突:', resolutions);
+              setConflictUsers([]);
+              setShowConflictModal(false);
+            }}
+          />
+        )}
+
+        {/* 安全日志模态框 */}
+        {showSecurityLog && (
+          <SecurityLogModal
+            isOpen={showSecurityLog}
+            onClose={() => setShowSecurityLog(false)}
+          />
+        )}
       </div>
     </MainLayout>
   );

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/providers/AuthProvider';
 import { getRoutesByRole } from '../../router/routes';
 import AIAssistant from '../../features/aiAssist/components/AIAssistant';
+import { NotificationProvider } from '../../app/providers/NotificationProvider';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -40,10 +41,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50" style={{
-      overflowY: 'scroll',
-      height: '100vh'
-    }}>
+    <NotificationProvider userId={user.id} userRole={user.role as 'student' | 'teacher' | 'admin'}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50" style={{
+        overflowY: 'scroll',
+        height: '100vh'
+      }}>
       {/* 固定顶部导航栏 - 增强设计 */}
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/95 shadow-lg border-b border-gray-200/50 px-6 py-4">
         <div className="flex items-center justify-between">
@@ -193,7 +195,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* AI助手 - 独立浮动 */}
       <AIAssistant />
-    </div>
+      </div>
+    </NotificationProvider>
   );
 };
 

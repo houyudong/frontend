@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import MainLayout from '../../../../pages/layout/MainLayout';
+import UserPermissionManager from '../components/UserPermissionManager';
 
 interface User {
   id: string;
@@ -27,6 +28,22 @@ interface User {
   bio?: string;
 }
 
+// 权限接口
+interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  category: 'system' | 'course' | 'student' | 'experiment' | 'report';
+  resource: string;
+  action: string;
+  enabled: boolean;
+}
+
+// 角色权限配置
+interface RolePermissions {
+  [key: string]: Permission[];
+}
+
 // 模拟用户详细数据
 const mockUserDetail: User = {
   id: '1',
@@ -43,6 +60,133 @@ const mockUserDetail: User = {
   department: '计算机科学与技术学院',
   studentId: '20250001',
   bio: '热爱编程，专注于嵌入式系统开发学习。'
+};
+
+// 模拟权限数据
+const mockPermissions: RolePermissions = {
+  student: [
+    {
+      id: 'student_course_view',
+      name: '查看课程',
+      description: '可以查看和学习分配的课程内容',
+      category: 'course',
+      resource: 'course',
+      action: 'view',
+      enabled: true
+    },
+    {
+      id: 'student_experiment_submit',
+      name: '提交实验',
+      description: '可以提交实验作业和报告',
+      category: 'experiment',
+      resource: 'experiment',
+      action: 'submit',
+      enabled: true
+    },
+    {
+      id: 'student_profile_edit',
+      name: '编辑个人资料',
+      description: '可以修改个人基本信息',
+      category: 'system',
+      resource: 'profile',
+      action: 'edit',
+      enabled: true
+    },
+    {
+      id: 'student_forum_post',
+      name: '论坛发帖',
+      description: '可以在学习论坛发布帖子和回复',
+      category: 'system',
+      resource: 'forum',
+      action: 'post',
+      enabled: false
+    }
+  ],
+  teacher: [
+    {
+      id: 'teacher_student_manage',
+      name: '管理学生',
+      description: '可以查看和管理班级学生信息',
+      category: 'student',
+      resource: 'student',
+      action: 'manage',
+      enabled: true
+    },
+    {
+      id: 'teacher_course_create',
+      name: '创建课程',
+      description: '可以创建和编辑课程内容',
+      category: 'course',
+      resource: 'course',
+      action: 'create',
+      enabled: true
+    },
+    {
+      id: 'teacher_experiment_grade',
+      name: '实验评分',
+      description: '可以对学生实验进行评分',
+      category: 'experiment',
+      resource: 'experiment',
+      action: 'grade',
+      enabled: true
+    },
+    {
+      id: 'teacher_report_generate',
+      name: '生成报告',
+      description: '可以生成教学分析报告',
+      category: 'report',
+      resource: 'report',
+      action: 'generate',
+      enabled: true
+    },
+    {
+      id: 'teacher_system_config',
+      name: '系统配置',
+      description: '可以修改部分系统配置',
+      category: 'system',
+      resource: 'system',
+      action: 'config',
+      enabled: false
+    }
+  ],
+  admin: [
+    {
+      id: 'admin_user_manage',
+      name: '用户管理',
+      description: '可以创建、编辑、删除用户账号',
+      category: 'system',
+      resource: 'user',
+      action: 'manage',
+      enabled: true
+    },
+    {
+      id: 'admin_system_config',
+      name: '系统配置',
+      description: '可以修改所有系统配置',
+      category: 'system',
+      resource: 'system',
+      action: 'config',
+      enabled: true
+    },
+    {
+      id: 'admin_data_export',
+      name: '数据导出',
+      description: '可以导出系统数据和报告',
+      category: 'report',
+      resource: 'data',
+      action: 'export',
+      enabled: true
+    },
+    {
+      id: 'admin_backup_restore',
+      name: '备份恢复',
+      description: '可以进行系统备份和恢复操作',
+      category: 'system',
+      resource: 'backup',
+      action: 'manage',
+      enabled: true
+    }
+  ]
 };
 
 // 模拟学习记录数据
@@ -79,7 +223,7 @@ const UserDetailPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [learningRecords, setLearningRecords] = useState(mockLearningRecords);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'info' | 'learning' | 'activity'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'permissions' | 'learning' | 'activity'>('info');
 
   // 模拟数据加载
   useEffect(() => {
@@ -235,6 +379,15 @@ const UserDetailPage: React.FC = () => {
                   </svg>
                   编辑用户
                 </button>
+                <button
+                  onClick={() => navigate(`/admin/users/${userId}/permissions`)}
+                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  权限分配
+                </button>
                 <Link
                   to="/admin/users"
                   className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50"
@@ -251,6 +404,7 @@ const UserDetailPage: React.FC = () => {
           <nav className="-mb-px flex space-x-8">
             {[
               { key: 'info', label: '基本信息', icon: '👤' },
+              { key: 'permissions', label: '权限管理', icon: '🔐' },
               { key: 'learning', label: '学习记录', icon: '📚' },
               { key: 'activity', label: '活动日志', icon: '📊' }
             ].map(tab => (
@@ -342,6 +496,17 @@ const UserDetailPage: React.FC = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'permissions' && user && (
+            <UserPermissionManager
+              userId={user.id}
+              userRole={user.role}
+              onPermissionChange={(permissions) => {
+                console.log('权限已更新:', permissions);
+                // 这里可以添加权限更新后的处理逻辑
+              }}
+            />
           )}
 
           {activeTab === 'learning' && user.role === 'student' && (

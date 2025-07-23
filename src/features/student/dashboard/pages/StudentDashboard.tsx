@@ -23,28 +23,37 @@ const StudentDashboard: React.FC = () => {
     currentStreak: 7
   };
 
-  // 快捷操作
-  const quickActions = [
+  // 主要学习操作 - 只保留核心学习功能
+  const primaryActions = [
     {
       title: '继续学习',
       description: '继续上次的课程学习',
       icon: '📚',
-      action: () => navigate('/student/courses'),
-      color: 'bg-blue-500'
+      action: () => {
+        try {
+          navigate('/student/courses');
+        } catch (error) {
+          console.warn('Navigation warning ignored:', error);
+          window.location.href = '/student/courses';
+        }
+      },
+      color: 'bg-blue-500',
+      highlight: true
     },
     {
       title: '开始实验',
       description: '进入实验编程环境',
       icon: '🧪',
-      action: () => navigate('/student/experiments'),
-      color: 'bg-green-500'
-    },
-    {
-      title: '学习进度',
-      description: '查看详细学习统计',
-      icon: '📊',
-      action: () => alert('学习进度页面开发中...'),
-      color: 'bg-purple-500'
+      action: () => {
+        try {
+          navigate('/student/experiments');
+        } catch (error) {
+          console.warn('Navigation warning ignored:', error);
+          window.location.href = '/student/experiments';
+        }
+      },
+      color: 'bg-green-500',
+      highlight: true
     }
   ];
 
@@ -206,7 +215,7 @@ const StudentDashboard: React.FC = () => {
           {/* 快捷操作 - 现代化设计 */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">快捷操作</h3>
+              <h3 className="text-xl font-bold text-gray-900">开始学习</h3>
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -214,26 +223,64 @@ const StudentDashboard: React.FC = () => {
               </div>
             </div>
             <div className="space-y-4">
-              {quickActions.map((action, index) => (
+              {primaryActions.map((action, index) => (
                 <button
                   key={index}
                   onClick={action.action}
-                  className="group w-full p-4 rounded-xl border border-gray-200 hover:border-transparent hover:shadow-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 text-left"
+                  className="group w-full p-6 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:shadow-lg hover:scale-105 transition-all duration-300 text-left"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
-                      <span className="text-white text-xl">{action.icon}</span>
+                    <div className={`w-16 h-16 ${action.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <span className="text-white text-3xl">{action.icon}</span>
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{action.title}</h4>
-                      <p className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors">{action.description}</p>
+                      <h4 className="text-lg font-semibold text-blue-900 group-hover:text-blue-700 transition-colors">
+                        {action.title}
+                      </h4>
+                      <p className="text-sm text-blue-600 group-hover:text-blue-500 transition-colors">
+                        {action.description}
+                      </p>
                     </div>
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              ))}
+
+              {/* 添加个人中心快捷入口 */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    try {
+                      navigate('/student/profile');
+                    } catch (error) {
+                      console.warn('Navigation warning ignored:', error);
+                      window.location.href = '/student/profile';
+                    }
+                  }}
+                  className="group w-full p-4 rounded-xl border border-gray-200 hover:border-purple-200 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-all duration-300 text-left"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-white text-xl">👤</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 group-hover:text-purple-700 transition-colors">
+                        个人中心
+                      </h4>
+                      <p className="text-sm text-gray-600 group-hover:text-purple-600 transition-colors">
+                        管理学习进度和个人资料
+                      </p>
+                    </div>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </button>
-              ))}
+              </div>
             </div>
           </div>
 
